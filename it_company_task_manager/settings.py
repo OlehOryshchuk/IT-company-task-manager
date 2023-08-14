@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "crispy_forms",
     "crispy_bootstrap4",
+    "taggit_autosuggest",
     "task_manager",
     "team_manager",
 ]
