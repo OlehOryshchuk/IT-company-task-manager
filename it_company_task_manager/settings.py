@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap4",
     "taggit_autosuggest",
+    "taggit",
     "task_manager",
     "team_manager",
 ]
