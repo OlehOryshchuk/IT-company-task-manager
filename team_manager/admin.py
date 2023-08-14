@@ -34,5 +34,8 @@ class WorkerAdmin(UserAdmin):
 
 @admin.register(Team)
 class TeamAdmin(admin.ModelAdmin):
-    list_display = "__all__"
+    list_display = [
+        "name",
+        "description",
+    ]
     search_fields = ["name"]
