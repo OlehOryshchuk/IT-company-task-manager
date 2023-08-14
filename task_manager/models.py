@@ -2,6 +2,8 @@ from django.db import models
 from it_company_task_manager.settings import AUTH_USER_MODEL
 from taggit_autosuggest.managers import TaggableManager
 
+from team_manager.models import Team
+
 
 class TaskType(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -41,7 +43,6 @@ class Task(models.Model):
     assignees = models.ManyToManyField(
         AUTH_USER_MODEL,
         related_name="tasks",
-        blank=True,
     )
     tags = TaggableManager(
         related_name="tasks",
@@ -50,7 +51,9 @@ class Task(models.Model):
     project = models.ForeignKey(
         "Project",
         on_delete=models.CASCADE,
-        related_name="tasks"
+        related_name="tasks",
+        blank=True,
+        null=True,
     )
 
     class Meta:
@@ -73,6 +76,10 @@ class Project(models.Model):
     )
     deadline = models.DateField(
         help_text="Enter the deadline for this task.",
+    )
+    teams = models.ManyToManyField(
+        Team,
+        related_name="projects",
     )
 
     class Meta:
