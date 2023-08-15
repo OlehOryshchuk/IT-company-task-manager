@@ -22,5 +22,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('taggit_autosuggest/', include('taggit_autosuggest.urls')),
-    path("accounts/", include("django.contrib.auth.urls"))
+    path("accounts/", include("django.contrib.auth.urls")),
+    path("", include("team_manager.urls", namespace="team_manager")),
+    # path("", include("task_manager.urls", namespace="task_manager")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
