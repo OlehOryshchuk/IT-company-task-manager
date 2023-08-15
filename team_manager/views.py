@@ -91,4 +91,28 @@ class WorkerDeleteView(LoginRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy("team_manager:worker-list")
 
 
+class PositionListView(LoginRequiredMixin, generic.ListView):
+    model = Position
+    form_class = PositionSearchForm
+    paginate_by = 5
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        name = self.request.GET.get("name")
+        search_form = PositionSearchForm(initial={
+            "name": name
+        })
+
+        context["search_form"] = search_form
+
+        return context
+
+    def get_queryset(self) -> QuerySet:
+        queryset = Position.objects.prefetch_related("workers")
+        name = self.request.GET.get("name")
+
+        if name:
+            return queryset.filter(name__icontains=name)
+        return queryset
 
