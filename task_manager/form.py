@@ -48,6 +48,18 @@ class TaskSearchForm(forms.Form):
     )
 
 
+class ProjectSearchForm(forms.Form):
+    name = forms.CharField(
+        max_length=255,
+        label="",
+        required=False,
+        widget=forms.TextInput(attrs={
+            "placeholder": "Search by project's name"
+        }
+        )
+    )
+
+
 class TaskCreateForm(forms.ModelForm):
     assignees = forms.ModelMultipleChoiceField(
         queryset=get_user_model().objects.all(),
