@@ -72,16 +72,18 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
             ],
+            "libraries": {
+                "query_transform": "templatetags.query_transform"
+            }
         },
-        "libraries": {
-            "query_transform": "templatetags.query_transform"
-        }
     },
 ]
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 WSGI_APPLICATION = "it_company_task_manager.wsgi.application"
+
+LOGIN_REDIRECT_URL = "/"
 
 
 # Database
