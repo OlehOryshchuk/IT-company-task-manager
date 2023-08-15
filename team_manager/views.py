@@ -116,3 +116,53 @@ class PositionListView(LoginRequiredMixin, generic.ListView):
             return queryset.filter(name__icontains=name)
         return queryset
 
+
+class TeamListView(LoginRequiredMixin, generic.ListView):
+    model = Team
+    paginate_by = 5
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        name = self.request.GET.get("name", "")
+        search_form = TeamSearchForm(initial={
+            "name": name
+        })
+
+        context["search_form"] = search_form
+
+        return context
+
+    def get_queryset(self) -> QuerySet:
+        queryset = Team.objects.select_related("members")
+        name = self.request.GET.get("name")
+
+        if name:
+            return queryset.filter(username__icontains=name)
+        return queryset
+
+
+class TeamDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Team
+    queryset = Team.objects.prefetch_related(
+        "projects__tasks", "members"
+    )
+
+
+class TeamCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Team
+    form_class = TeamCreationForm
+    success_url = reverse_lazy("team_manager:team-list")
+
+
+class TeamUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Team
+    form_class = TeamCreationForm
+
+    def get_success_url(self):
+        return reverse_lazy("team_manager:team-detail", kwargs={"pk": self.object.pk})
+
+
+class TeamDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Team
+    success_url = reverse_lazy("team_manager:team-list")
