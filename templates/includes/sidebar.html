@@ -1,0 +1,15 @@
+<ul class="sidebar-nav list-group">
+
+  {% if user.is_authenticated %}
+    <li class="list-group-item"><a href="{% url 'team_manager:worker-detail' pk=user.id %}">Your home page</a></li>
+    <li class="list-group-item"><a href="{% url 'logout'%}">Logout</a></li>
+  {% else %}
+    <li class="list-group-item"><a href="{% url 'login'%}">Login</a></li>
+  {% endif %}
+  <br>
+   <li class="list-group-item"><a href="{% url 'team_manager:index' %}">Home page</a></li>
+  <li class="list-group-item"><a href="{% url 'team_manager:worker-list' %}">Workers</a></li>
+  <li class="list-group-item"><a href="{% url 'task_manager:project-list' %}">Projects</a></li>
+  <li class="list-group-item"><a href="{% url 'team_manager:team-list' %}">Teams</a></li>
+  <li class="list-group-item"><a href="{% url 'team_manager:position-list' %}">Positions</a></li>
+</ul>
