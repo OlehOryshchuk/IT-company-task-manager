@@ -37,7 +37,7 @@ class Team(models.Model):
     )
     owner = models.ForeignKey(
         Worker,
-        related_name="my_team",
+        related_name="my_teams",
         on_delete=models.CASCADE,
         null=True,
     )
