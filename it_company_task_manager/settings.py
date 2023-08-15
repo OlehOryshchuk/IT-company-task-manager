@@ -73,6 +73,9 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
             ],
         },
+        "libraries": {
+            "query_transform": "templatetags.query_transform"
+        }
     },
 ]
 
