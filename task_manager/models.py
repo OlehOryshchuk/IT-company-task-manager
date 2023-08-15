@@ -48,6 +48,12 @@ class Task(models.Model):
         related_name="tasks",
         blank=True,
     )
+    owner = models.ForeignKey(
+        AUTH_USER_MODEL,
+        related_name="my_tasks",
+        on_delete=models.CASCADE,
+        null=True,
+    )
     project = models.ForeignKey(
         "Project",
         on_delete=models.CASCADE,
@@ -80,6 +86,16 @@ class Project(models.Model):
     teams = models.ManyToManyField(
         Team,
         related_name="projects",
+    )
+    tags = TaggableManager(
+        related_name="projects",
+        blank=True,
+    )
+    owner = models.ForeignKey(
+        AUTH_USER_MODEL,
+        related_name="projects",
+        on_delete=models.CASCADE,
+        null=True
     )
 
     class Meta:
