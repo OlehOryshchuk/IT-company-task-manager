@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}
+  <title>Home page</title>
+{% endblock %}
+
+{% block content %}
+
+	<h1>Task Manager</h1>
+
+  <div class="container">
+
+    <div class="row">
+
+      <div class="col-sm-3">
+
+        <h4>Number of completed projects</h4>
+        <p>{{ num_completed_projects }}</p>
+        <hr>
+        <p>We still can do more!</p>
+
+      </div>
+
+      <div class="col-sm-3">
+
+        <h4>Number of completed task </h4>
+        <p>{{ num_completed_tasks }}</p>
+        <hr>
+        <p>We have no limits!</p>
+
+      </div>
+
+      <div class="col-sm-3">
+
+        <h4>Number of teams </h4>
+        <p>{{ num_teams }}</p>
+        <hr>
+        <p>We are always growing!</p>
+
+      </div>
+
+      <div class="col-sm-3">
+
+        <h4>Number of workers </h4>
+        <p>{{ num_workers }}</p>
+        <hr>
+        <p>We always glad to hire more people!</p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+{% endblock %}
