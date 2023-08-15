@@ -33,7 +33,13 @@ class Team(models.Model):
     description = models.TextField(null=True, blank=True)
     members = models.ManyToManyField(
         Worker,
-        related_name="workers",
+        related_name="teams",
+    )
+    owner = models.ForeignKey(
+        Worker,
+        related_name="my_team",
+        on_delete=models.CASCADE,
+        null=True,
     )
 
     class Meta:
