@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+{% block title %}
+  <title>Position List</title>
+{% endblock %}
+
+{% block content %}
+
+  <h1>
+    Position List
+  </h1>
+
+  <form action="" method="get" class="form-inline">
+
+    {% csrf_token %}
+    {{ search_form|crispy }}
+    <input type="submit" value="Submit"  class="btn btn-secondary">
+
+  </form>
+  <br>
+  {% if position_list %}
+    <table class="table">
+      <tr>
+        <th>Id</th>
+        <th>Position Name</th>
+        <th>Number of workers</th>
+      </tr>
+
+      {% for position in position_list %}
+        <tr>
+          <td>{{ position.id }}</td>
+          <td>{{ position.name }}</td>
+          <td>{{ position.workers.count }}</td>
+        </tr>
+      {% endfor %}
+
+    </table>
+  {% else %}
+    <p>There are no position in the service</p>
+  {% endif %}
+
+
+{% endblock %}
