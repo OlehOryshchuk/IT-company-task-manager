@@ -6,7 +6,8 @@ from datetime import datetime
 from taggit_autosuggest.widgets import TagAutoSuggest
 from taggit.models import Tag
 
-from .models import Task
+from .models import Task, Project
+from team_manager.models import Team
 
 
 class TagSearchForm(forms.Form):
@@ -73,11 +74,7 @@ class TaskCreateForm(forms.ModelForm):
 
     def clean_deadline(self):
         deadline = self.cleaned_data.get("deadline")
-
-        if deadline < datetime.today().date():
-            raise ValidationError("Deadline cannot be in the past!")
-
-        return deadline
+        return valid_deadline(deadline)
 
 
 class TaskChangeStatusForm(forms.ModelForm):
@@ -92,3 +89,37 @@ class TaskChangeStatusForm(forms.ModelForm):
             "is_completed": forms.HiddenInput(),
         }
 
+
+class ProjectCreateForm(forms.ModelForm):
+    teams = forms.ModelMultipleChoiceField(
+        queryset=Team.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+    )
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.all(),
+        widget=TagAutoSuggest(
+            attrs={
+                "data_autocomplete_url": reverse_lazy("taggit_autosuggest-list")
+            },
+            tagmodel=Tag),
+        required=False,
+    )
+
+    class Meta:
+        model = Project
+        fields = "__all__"
+        widgets = {
+            "owner": forms.HiddenInput(),
+            "is_completed": forms.HiddenInput(),
+        }
+
+    def clean_deadline(self):
+        deadline = self.cleaned_data.get("deadline")
+        return valid_deadline(deadline)
+
+
+def valid_deadline(deadline: datetime) -> datetime:
+    if deadline < datetime.today().date():
+        raise ValidationError("Deadline cannot be in the past!")
+
+    return deadline
