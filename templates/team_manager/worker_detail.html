@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>Worker page</title>
+{% endblock %}
+
+{% block content %}
+
+  <h1>
+    Username: {{ worker.username }}
+	  {% if user == worker %}
+	    <a href="{% url 'team_manager:worker-update' pk=worker.id %}" class="btn btn-primary"> Update</a>
+	    <a href="{% url 'team_manager:worker-delete' pk=worker.id %}" class="btn btn-danger"> Delete</a>
+	  {% endif %}
+  </h1>
+
+  <p><strong>First name: </strong>{{ worker.first_name }}</p>
+  <p><strong>Last name: </strong>{{ worker.last_name }}</p>
+  <p><strong>Position: </strong>{{ worker.position.name }}</p>
+	<hr>
+	<p><a
+    href="{% url 'team_manager:team-list'%}?members={{ worker.id }}"
+    class="btn btn-secondary"
+  >Work at teams</a></p>
+
+
+  <div class="row">
+      <div class="col-6">
+        <h4>{{ worker.username }} completed this tasks</h4>
+
+        {% for task in worker.tasks.all %}
+          {% if task.is_completed %}
+            <div>
+
+<!--              <h5><a href="{% url 'task_manager:task-detail' pk=task.id%}">{{ task.name }}</a></h5>-->
+	            <p>From: {{ task.owner }}</p>
+              <p>{{ task.description }}</p>
+              <p>{{ task.deadline }}</p>
+
+            </div>
+            <hr>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <div class="col-6">
+        <h4>{{ worker.username }} must complete this tasks</h4>
+
+        {% for task in worker.tasks.all %}
+          {% if task.is_completed == False %}
+            <div>
+
+<!--              <h5><a href="{% url 'task_manager:task-detail' pk=task.id%}">{{ task.name }}</a></h5>-->
+	            <p>From: {{ task.owner }}</p>
+              <p>{{ task.description }}</p>
+              <p>{{ task.deadline }}</p>
+
+            </div>
+            <hr>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+{% endblock %}
