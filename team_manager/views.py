@@ -62,7 +62,7 @@ class WorkerListView(LoginRequiredMixin, generic.ListView):
 class WorkerDetailView(LoginRequiredMixin, generic.DetailView):
     model = Worker
     queryset = Worker.objects.prefetch_related(
-        "tasks__task_type", "tasks__tags", 'teams'
+        "tasks__owner", "tasks__task_type", "tasks__tags", 'teams'
     )
 
 
@@ -136,9 +136,12 @@ class TeamListView(LoginRequiredMixin, generic.ListView):
     def get_queryset(self) -> QuerySet:
         queryset = Team.objects.select_related("members")
         name = self.request.GET.get("name")
+        worker = self.request.GET.get("members")
 
         if name:
             return queryset.filter(username__icontains=name)
+        if worker:
+            return queryset.filter(members=worker)
         return queryset
 
 
