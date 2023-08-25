@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+
+{% block title %}
+    <title>Tasks</title>
+{% endblock %}
+
+{% block content %}
+
+  <h1>Tasks
+    <a href="{% url 'task_manager:task-create' %}" class="btn btn-primary">Create task</a>
+    <a href="{% url 'task_manager:task-type-create' %}" class="btn btn-primary">Create task type</a>
+  </h1>
+
+
+  <form action="" method="get" class="form-inline">
+
+    {% csrf_token %}
+    {{ search_form|crispy }}
+    <input type="submit" value="Submit" class="btn btn-secondary">
+
+  </form>
+  <p>
+    <a href="{% url 'task_manager:task-filter' %}" class="btn btn-secondary">Filter</a>
+  </p>
+
+  <hr>
+
+    {% if task_list %}
+
+    <table class="table">
+
+      <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Is completed</th>
+        <th>Task type</th>
+        <th>Task priority</th>
+        <th>Deadline</th>
+      </tr>
+      {% for task in task_list %}
+
+      <tr>
+        <td>{{ task.id }}</td>
+        <td><a href="{% url 'task_manager:task-detail' pk=task.id %}">
+          {% if task.owner == user %} Your task:{{task.name}}{% else %} {{ task.name }} {% endif %}</a></td>
+        <td>{{ task.is_completed|yesno:"Yes, No" }}</td>
+        <td>{{ task.task_type }}</td>
+        <td>{{ task.priority }}</td>
+        <td>{{ task.deadline}}</td>
+      </tr>
+      {% endfor %}
+
+    {% else %}
+      <p>There are no task in server</p>
+    {% endif %}
+
+  </table>
+
+{% endblock %}
