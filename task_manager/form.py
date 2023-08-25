@@ -1,39 +1,30 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from django.urls import reverse_lazy
 from datetime import datetime
-from taggit_autosuggest.widgets import TagAutoSuggest
-from taggit.models import Tag
 
-from .models import Task, Project
+from .models import Task, Project, TaskType
 from team_manager.models import Team
 
 
-class TagSearchForm(forms.Form):
-    name = forms.CharField(
-        max_length=255,
-        label="",
+class TaskFilterForm(forms.ModelForm):
+    task_type = forms.ModelChoiceField(
+        queryset=TaskType.objects.all(),
+        empty_label="Filter by task type",
         required=False,
-        widget=forms.TextInput(attrs={
-            "placeholder": "Search task by tag"
-        }
-        )
-
+    )
+    is_completed = forms.ChoiceField(
+        choices=(
+            (False, "Not completed"),
+            (True, "Completed")
+        ),
+        required=False,
+        widget=forms.RadioSelect()
     )
 
-
-class TaskTypeSearchForm(forms.Form):
-    name = forms.CharField(
-        max_length=255,
-        label="",
-        required=False,
-        widget=forms.TextInput(attrs={
-            "placeholder": "Search task by type name"
-        }
-        )
-
-    )
+    class Meta:
+        model = Task
+        fields = ["task_type", "tags", "is_completed"]
 
 
 class TaskSearchForm(forms.Form):
@@ -62,17 +53,7 @@ class ProjectSearchForm(forms.Form):
 
 class TaskCreateForm(forms.ModelForm):
     assignees = forms.ModelMultipleChoiceField(
-        queryset=get_user_model().objects.all(),
         widget=forms.CheckboxSelectMultiple,
-        required=False,
-    )
-    tags = forms.ModelMultipleChoiceField(
-        queryset=Tag.objects.all(),
-        widget=TagAutoSuggest(
-            attrs={
-                "data_autocomplete_url": reverse_lazy("taggit_autosuggest-list")
-            },
-            tagmodel=Tag),
         required=False,
     )
 
@@ -96,25 +77,12 @@ class TaskChangeStatusForm(forms.ModelForm):
             "assignees",
             "is_completed",
         )
-        widgets = {
-            "assignees": forms.HiddenInput(),
-            "is_completed": forms.HiddenInput(),
-        }
 
 
 class ProjectCreateForm(forms.ModelForm):
     teams = forms.ModelMultipleChoiceField(
         queryset=Team.objects.all(),
         widget=forms.CheckboxSelectMultiple,
-    )
-    tags = forms.ModelMultipleChoiceField(
-        queryset=Tag.objects.all(),
-        widget=TagAutoSuggest(
-            attrs={
-                "data_autocomplete_url": reverse_lazy("taggit_autosuggest-list")
-            },
-            tagmodel=Tag),
-        required=False,
     )
 
     class Meta:
