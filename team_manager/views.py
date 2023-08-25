@@ -167,6 +167,10 @@ class TeamCreateView(LoginRequiredMixin, generic.CreateView):
     form_class = TeamCreationForm
     success_url = reverse_lazy("team_manager:team-list")
 
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
+
 
 class TeamUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Team
