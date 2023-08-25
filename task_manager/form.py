@@ -71,6 +71,16 @@ class TaskCreateForm(forms.ModelForm):
 
 
 class TaskChangeStatusForm(forms.ModelForm):
+    assignees = forms.ModelMultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        queryset=None
+    )
+    is_completed = forms.BooleanField(
+        widget=forms.CheckboxInput(),
+        required=False,
+    )
+
     class Meta:
         model = Task
         fields = (
@@ -98,7 +108,6 @@ class TaskChangeStatusForm(forms.ModelForm):
 
         if commit:
             task.save()
-
 
         return task
 
