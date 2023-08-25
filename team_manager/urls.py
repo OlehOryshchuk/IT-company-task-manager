@@ -40,7 +40,7 @@ urlpatterns = [
         name="worker-update"
     ),
     path(
-        "worker/<int:pk>/delete",
+        "worker/<int:pk>/delete/",
         WorkerDeleteView.as_view(),
         name="worker-delete"
     ),
@@ -70,7 +70,7 @@ urlpatterns = [
         name="team-update"
     ),
     path(
-        "team/<int:pk>/delete",
+        "team/<int:pk>/delete/",
         TeamDeleteView.as_view(),
         name="team-delete"
     ),
