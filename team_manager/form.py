@@ -1,7 +1,9 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import get_user_model
 
 from .models import Worker, Team
+from task_manager.models import Project
 
 
 class PositionSearchForm(forms.Form):
@@ -56,6 +58,17 @@ class WorkerCreationForm(UserCreationForm):
 
 
 class TeamCreationForm(forms.ModelForm):
+    projects = forms.ModelMultipleChoiceField(
+        queryset=Project.objects.all(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple()
+    )
+    members = forms.ModelMultipleChoiceField(
+        queryset=get_user_model().objects.all(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple()
+    )
+
     class Meta:
         model = Team
         fields = "__all__"
