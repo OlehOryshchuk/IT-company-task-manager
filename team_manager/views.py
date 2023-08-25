@@ -161,6 +161,12 @@ class TeamDetailView(LoginRequiredMixin, generic.DetailView):
         "projects__tasks"
     )
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["team_join"] = TeamJoinRemoveForm()
+
+        return context
+
 
 class TeamCreateView(LoginRequiredMixin, generic.CreateView):
     model = Team
