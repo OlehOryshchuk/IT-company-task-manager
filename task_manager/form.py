@@ -99,6 +99,7 @@ class TaskChangeStatusForm(forms.ModelForm):
         if commit:
             task.save()
 
+
         return task
 
 
