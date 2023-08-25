@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+{% block title %}
+ <title>Task page</title>
+{% endblock %}
+
+{% block content %}
+
+  <h1>{{ task.name }}</h1>
+  <p>Owner: <strong>{{ task.owner.username }}</strong></p>
+  <hr>
+  <p>Description: <strong>{{ task.description }}</strong></p>
+  <p>Deadline: <strong>{{ task.deadline }}</strong></p>
+  <p>Task is <strong>{{ task.is_completed|yesno:"completed, not completed" }}</strong></p>
+  <p>Task priority: <strong>{{ task.priority }}</strong></p>
+  <p>Task type: <strong>{{ task.task_type.name }}</strong></p>
+  <p>Part of project: <strong><a href="{% url 'task_manager:project-detail' pk=task.project.id %}">{{ task.project.name }}</a></strong></p>
+
+  <p>Tags:
+    {% for tag in task.tags.all %}
+      <strong>{{ tag.name }}</strong>
+    {% endfor %}
+  </p>
+
+
+  <hr>
+
+  {% if valid_user%}
+    {% if user in task.assignees.all %}
+      {% if not is_past_deadline %}
+
+        <form action="" method="post">
+
+          {% csrf_token %}
+          {{ update_form|crispy}}
+          <input type="submit" value="Submit">
+
+        </form>
+
+      {% else %}
+        <p>Task is past the deadline</p>
+      {% endif %}
+    {% else %}
+      <form action="" method="post">
+
+        {% csrf_token %}
+        <input type="submit" value="Do the task?">
+        <input type="hidden" name="assignees" value="{{ user.id }}">
+
+      </form>
+    {% endif %}
+  {% else %}
+    <ul  class="sidebar-nav list-group">
+      <h4>Join one of team to implement that task</h4>
+      {% for team in task.project.teams.all %}
+        <li class="list-group-item"><a href="{% url 'team_manager:team-detail' pk=team.id %}">{team.name}</a></li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+
+  {% if user == task.owner %}
+      <a href="{% url 'task_manager:task-update' pk=task.id %}" class="btn btn-primary">Update</a>
+      <a href="{% url 'task_manager:task-delete' pk=task.id %}" class="btn btn-danger">Delete</a>
+  {% endif %}
+  <hr>
+
+  <div>
+
+    {% if task.is_completed %}
+
+      <h4>Task was completed by:</h4>
+      <ul>
+        {% for worker in task.assignees.all %}
+        <li>
+          <a href="{% url 'team_manager:worker-detail' pk=worker.id %}">{{ worker.username }}</a> ({{ worker.position }})
+        </li>
+      </ul>
+
+      {% endfor %}
+
+    {% else %}
+
+      <h4>Task is currently being worked on by:</h4>
+      <ul>
+        {% for worker in task.assignees.all %}
+        <li>
+           <a href="{% url 'team_manager:worker-detail' pk=worker.id %}">{{ worker.username }}</a> ({{ worker.position }})
+        </li>
+        {% endfor %}
+      </ul>
+
+    {% endif %}
+  </div>
+
+{% endblock %}
