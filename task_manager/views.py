@@ -157,4 +157,67 @@ class TaskDeleteView(LoginRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy("task_manager:task-list")
 
 
+class ProjectListView(LoginRequiredMixin, generic.ListView):
+    model = Project
+    paginate_by = 5
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        name = self.request.GET.get("name", "")
+
+        search_form = ProjectSearchForm(initial={"name": name})
+
+        context["search_form"] = search_form
+
+        return context
+
+    def get_queryset(self) -> QuerySet:
+        queryset = Project.objects.prefetch_related(
+            "teams", "tasks"
+        )
+        name = self.request.GET.get("name", "")
+        team_projects = self.request.GET.get("team_projects", "")
+
+        if name:
+            queryset = queryset.filter(name__icontains=name)
+
+        if team_projects:
+            queryset = queryset.filter(teams=team_projects)
+
+        return queryset
+
+
+class ProjectDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Project
+    queryset = Project.objects.prefetch_related(
+        "teams", "tags"
+    )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["is_past_deadline"] = valid_deadline(deadline=self.object.deadline)
+
+        return context
+
+
+class ProjectCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Project
+    form_class = ProjectCreateForm
+
+    def get_success_url(self):
+        return reverse_lazy("task_manager:project-detail", kwargs={"pk": self.object.id})
+
+
+class ProjectUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Project
+    fields = "__all__"
+
+    def get_success_url(self):
+        return reverse_lazy("task_manager:project-detail", kwargs={"pk": self.object.pk})
+
+
+class ProjectDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Project
+    success_url = reverse_lazy("task_manager:project-list")
