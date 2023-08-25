@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+
+{% block title %}
+    <title>Projects</title>
+{% endblock %}
+
+{% block content %}
+
+  <h1>Projects
+    <a href="{% url 'task_manager:project-create' %}" class="btn btn-primary">Create</a>
+  </h1>
+
+
+  <form action="" method="get" class="form-inline">
+
+    {% csrf_token %}
+    {{ search_form|crispy }}
+    <input type="submit" value="Submit" class="btn btn-secondary">
+
+  </form>
+
+    {% if project_list %}
+
+      <table class="table">
+
+        <tr>
+          <th>Id</th>
+          <th>Name</th>
+          <th>Is completed</th>
+          <th>Project priority</th>
+          <th>Deadline</th>
+        </tr>
+        {% for project in project_list %}
+
+          <tr>
+            <td>{{ project.id }}</td>
+            <td><a href="{% url 'task_manager:project-detail' pk=project.id %}">
+              {% if project.owner == user %} Your project: {{project.name}} {% else %} {{ project.name }} {% endif %}</a></td>
+            <td>{{ project.is_completed|yesno:"Yes, No" }}</td>
+            <td>{{ project.priority}}</td>
+            <td>{{ project.deadline}}</td>
+
+          </tr>
+        {% endfor %}
+
+    {% else %}
+      <p>There are no projects in server</p>
+    {% endif %}
+
+  </table>
+
+{% endblock %}
