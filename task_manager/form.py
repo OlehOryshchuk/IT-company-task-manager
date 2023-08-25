@@ -55,6 +55,7 @@ class TaskCreateForm(forms.ModelForm):
     assignees = forms.ModelMultipleChoiceField(
         widget=forms.CheckboxSelectMultiple,
         required=False,
+        queryset=None,
     )
 
     class Meta:
@@ -64,6 +65,10 @@ class TaskCreateForm(forms.ModelForm):
             "owner": forms.HiddenInput(),
             "is_completed": forms.HiddenInput(),
         }
+
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["assignees"].queryset = get_user_model().objects.filter(teams__members=user)
 
     def clean_deadline(self):
         deadline = self.cleaned_data.get("deadline")
