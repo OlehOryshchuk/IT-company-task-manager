@@ -139,6 +139,21 @@ class TeamListView(LoginRequiredMixin, generic.ListView):
 
         return context
 
+    def get_queryset(self) -> QuerySet:
+        queryset = Team.objects.prefetch_related(
+            "members", "projects", "projects__tasks").all()
+        name = self.request.GET.get("name", "")
+        worker = self.request.GET.get("members", "")
+        project_id = self.request.GET.get("project", "")
+
+        if name:
+            queryset = queryset.filter(name__icontains=name)
+        if worker:
+            queryset = queryset.filter(members=worker)
+        if project_id:
+            queryset = queryset.filter(projects=project_id)
+        return queryset
+
 
 class TeamDetailView(LoginRequiredMixin, generic.DetailView):
     model = Team
