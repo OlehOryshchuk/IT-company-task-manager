@@ -78,6 +78,10 @@ class TaskChangeStatusForm(forms.ModelForm):
             "is_completed",
         )
 
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["assignees"].queryset = get_user_model().objects.filter(teams__members=user)
+
 
 class ProjectCreateForm(forms.ModelForm):
     teams = forms.ModelMultipleChoiceField(
