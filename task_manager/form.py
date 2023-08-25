@@ -82,6 +82,7 @@ class TaskChangeStatusForm(forms.ModelForm):
 class ProjectCreateForm(forms.ModelForm):
     teams = forms.ModelMultipleChoiceField(
         queryset=Team.objects.all(),
+        required=False,
         widget=forms.CheckboxSelectMultiple,
     )
 
