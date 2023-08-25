@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+{% block title %}
+ <title>Project page</title>
+{% endblock %}
+
+{% block content %}
+
+  <h1>{{ project.name }}
+    {% if user == project.owner %}
+      <a href="{% url 'task_manager:project-update' pk=project.id %}" class="btn btn-primary">Update</a>
+      <a href="{% url 'task_manager:project-delete' pk=project.id %}" class="btn btn-danger">Delete</a>
+    {% endif %}
+  </h1>
+  <p>Owner:{{ project.owner.username }}</p>
+  {% if is_past_deadline %}
+  <p><strong> Project is past the deadline </strong></p>
+  {% endif %}
+
+  <hr>
+  <p>Description: {{ project.description }}</p>
+  <p>Deadline: {{ project.deadline }}</p>
+  <p>Project is {{ project.is_completed|yesno:"completed, not completed" }}</p>
+  <p>Project priority: {{ project.priority }}</p>
+  <p>Tags:
+    {% for tag in project.tags.all %}
+      <span class="taggit-tag"><i>{{ tag.name }},</i></span>
+    {% endfor %}
+  </p>
+  <br>
+
+  <p><a href="{% url 'team_manager:team-list'%}?project={{ project.id }}">
+    {{ project.is_completed|yesno:"Project was completed by teams,Project is currently being worked on by team" }}
+  </a></p>
+
+  <hr>
+
+  <div class="row">
+      <div class="col-6">
+        <h4>Project completed tasks</h4>
+
+        {% for task in project.tasks.all %}
+          {% if task.is_completed %}
+            <div>
+
+              <h5><a href="{% url 'task_manager:task-detail' pk=task.id%}">{{ task.name }}</a></h5>
+	            <p>From: {{ task.owner }}</p>
+              <p>{{ task.description }}</p>
+              <p>{{ task.deadline }}</p>
+
+            </div>
+            <hr>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <div class="col-6">
+        <h4>Project not completed task</h4>
+
+        {% for task in project.tasks.all %}
+          {% if task.is_completed == False %}
+            <div>
+
+              <h5><a href="{% url 'task_manager:task-detail' pk=task.id%}">{{ task.name }}</a></h5>
+	            <p>From: {{ task.owner }}</p>
+              <p>{{ task.description }}</p>
+              <p>{{ task.deadline }}</p>
+
+            </div>
+            <hr>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+{% endblock %}
