@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -14,6 +14,7 @@ from .form import (
     PositionSearchForm,
     TeamCreationForm,
     TeamSearchForm,
+    TeamJoinRemoveForm,
 )
 
 
@@ -38,7 +39,7 @@ class WorkerListView(LoginRequiredMixin, generic.ListView):
     model = Worker
     paginate_by = 5
 
-    def get_context_data(self, *, object_list=None, **kwargs):
+    def get_context_data(self, *, object_list=None, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
 
         username = self.request.GET.get("username", "")
@@ -52,10 +53,15 @@ class WorkerListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self) -> QuerySet:
         queryset = Worker.objects.all().select_related("position")
-        username = self.request.GET.get("username")
+        username = self.request.GET.get("username", "")
+        team_members = self.request.GET.get("team_members", "")
 
         if username:
-            return queryset.filter(username__icontains=username)
+            queryset = queryset.filter(username__icontains=username)
+
+        if team_members:
+            queryset = queryset.filter(teams=team_members)
+
         return queryset
 
 
@@ -133,22 +139,11 @@ class TeamListView(LoginRequiredMixin, generic.ListView):
 
         return context
 
-    def get_queryset(self) -> QuerySet:
-        queryset = Team.objects.select_related("members")
-        name = self.request.GET.get("name")
-        worker = self.request.GET.get("members")
-
-        if name:
-            return queryset.filter(username__icontains=name)
-        if worker:
-            return queryset.filter(members=worker)
-        return queryset
-
 
 class TeamDetailView(LoginRequiredMixin, generic.DetailView):
     model = Team
     queryset = Team.objects.prefetch_related(
-        "projects__tasks", "members"
+        "projects__tasks"
     )
 
 
