@@ -91,6 +91,7 @@ class ProjectCreateForm(forms.ModelForm):
         widgets = {
             "owner": forms.HiddenInput(),
             "is_completed": forms.HiddenInput(),
+            "deadline": forms.DateInput(attrs={"type": "date"})
         }
 
     def clean_deadline(self):
