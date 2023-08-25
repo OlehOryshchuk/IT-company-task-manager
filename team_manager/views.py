@@ -167,6 +167,22 @@ class TeamDetailView(LoginRequiredMixin, generic.DetailView):
 
         return context
 
+    def post(self, *args, **kwargs):
+        team = self.get_object()
+
+        join_user_to_team = self.request.POST.get("join", "")
+        user_left_team = self.request.POST.get("leave", "")
+
+        if join_user_to_team:
+            team.members.add(join_user_to_team)
+
+        if user_left_team:
+            team.members.remove(user_left_team)
+
+        team.save()
+
+        return redirect("team_manager:team-detail", pk=team.pk)
+
 
 class TeamCreateView(LoginRequiredMixin, generic.CreateView):
     model = Team
