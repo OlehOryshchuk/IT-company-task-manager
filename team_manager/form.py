@@ -75,3 +75,13 @@ class TeamCreationForm(forms.ModelForm):
         widgets = {
             "owner": forms.HiddenInput()
         }
+
+
+class TeamJoinRemoveForm(forms.ModelForm):
+    class Meta:
+        model = Team
+        fields = ["members"]
+        widgets = {
+            "members": forms.HiddenInput()
+        }
+
