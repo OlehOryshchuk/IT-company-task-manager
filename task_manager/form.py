@@ -82,6 +82,25 @@ class TaskChangeStatusForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields["assignees"].queryset = get_user_model().objects.filter(teams__members=user)
 
+    def save(self, commit=True):
+        task = super().save(commit=False)
+
+        update_assignees = self.cleaned_data.get("assignees", [])
+        update_is_completed = self.cleaned_data.get("is_completed", "")
+
+        task.assignees.clear()
+        task.assignees.add(*update_assignees)
+
+        if update_is_completed:
+            task.is_completed = True
+        else:
+            task.is_completed = False
+
+        if commit:
+            task.save()
+
+        return task
+
 
 class ProjectCreateForm(forms.ModelForm):
     teams = forms.ModelMultipleChoiceField(
