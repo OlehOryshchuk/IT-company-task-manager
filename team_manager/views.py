@@ -14,7 +14,7 @@ from .form import (
     PositionSearchForm,
     TeamCreationForm,
     TeamSearchForm,
-    TeamJoinRemoveForm,
+    TeamJoinLeaveForm,
 )
 
 
@@ -163,7 +163,7 @@ class TeamDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["team_join"] = TeamJoinRemoveForm()
+        context["team_join"] = TeamJoinLeaveForm()
 
         return context
 

@@ -9,7 +9,7 @@ from ..form import (
 
     TeamSearchForm,
     TeamCreationForm,
-    TeamJoinRemoveForm,
+    TeamJoinLeaveForm,
 )
 from ..models import Position
 
@@ -119,6 +119,6 @@ class TeamFormTest(TestCase):
         self.assertFalse(valid_team.is_valid())
 
     def test_join_leave_form_field(self):
-        join_leave_team = TeamJoinRemoveForm()
+        join_leave_team = TeamJoinLeaveForm()
 
         self.assertTrue(join_leave_team.fields.get("members"))
