@@ -72,3 +72,14 @@ class PublicWorkerTest(TestCase):
 
         self.assertNotEqual(response.status_code, 200)
 
+
+class PrivateWorkerTests(TestCase):
+    def setUp(self) -> None:
+        self.client = Client()
+
+        self.user = get_user_model().objects.create_user(
+            username="test_username", password="test_1234"
+        )
+        self.client.force_login(self.user)
+
+        self.is_paginated_by = 5
