@@ -83,3 +83,23 @@ class PrivateWorkerTests(TestCase):
         self.client.force_login(self.user)
 
         self.is_paginated_by = 5
+
+    def test_receive_list_of_workers(self):
+        for i in range(10):
+            get_user_model().objects.create(
+                username=f"worker{i}",
+                password=f"worker123{i}",
+                position=Position.objects.create(
+                    name=f"Position{i}"
+                )
+            )
+
+        response = self.client.get(WORKER_LIST)
+        workers = get_user_model().objects.all()[:self.is_paginated_by]
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            list(response.context["workers_list"]),
+            list(workers)
+        )
+        self.assertTemplateUsed(response, "team_manager:worker_list.html")
