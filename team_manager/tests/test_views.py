@@ -18,3 +18,31 @@ class PublicPositionTest(TestCase):
         response = self.client.get(POSITION_LIST)
 
         self.assertNotEqual(response.status_code, 200)
+
+
+class PrivatePositionTest(TestCase):
+    def setUp(self) -> None:
+        self.client = Client()
+
+        self.user = get_user_model().objects.create_user(
+            username="test_username", password="test_1234"
+        )
+        self.client.force_login(self.user)
+
+        self.is_paginated_by = 5
+
+    def test_receive_list_of_position(self):
+        for i in range(10):
+            Position.objects.create(
+                name=f"TestName{i}"
+            )
+
+        response = self.client.get(POSITION_LIST)
+        positions = Position.objects.all()[:self.is_paginated_by]
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            list(response.context["position_list"]),
+            list(positions)
+        )
+        self.assertTemplateUsed(response, "team_manager/position_list.html")
