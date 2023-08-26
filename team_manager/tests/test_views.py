@@ -125,3 +125,26 @@ class PrivateWorkerTests(TestCase):
             worker_list[0].username,
             "user2"
         )
+
+    def test_display_all_workers_from_the_team(self):
+        searched_worker = Team.objects.create(
+            name="Team1",
+            owner=self.user,
+        )
+        searched_worker.members.add(self.user.id)
+        Team.objects.create(
+            name="Team2",
+            owner=self.user
+        )
+
+        response = self.client.get(WORKER_LIST, data={
+            "team_members": searched_worker.id
+        })
+
+        self.assertEqual(response.status_code, 200)
+        worker_list = response.context["worker_list"]
+        self.assertEqual(len(worker_list), 1)
+        self.assertEqual(
+            worker_list[0].username,
+            self.user.username
+        )
