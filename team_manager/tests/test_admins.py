@@ -14,6 +14,13 @@ class AdminSiteTest(TestCase):
         self.client.force_login(self.admin_user)
 
         self.position = Position.objects.create(name="Developer")
+        self.worker = Worker.objects.create_user(
+            username="driver_username",
+            password="driver_1234",
+            first_name="driver_name",
+            last_name="driver_last_name",
+            position=self.position,
+        )
 
     def test_admin_position_list_has_position(self):
         url = reverse("admin:team_manager_position_changelist")
@@ -30,3 +37,9 @@ class AdminSiteTest(TestCase):
 
         changelist = response.context['cl']
         self.assertIn(self.position, changelist.queryset)
+
+    def test_admin_worker_list_has_field_position(self):
+        url = reverse("admin:team_manager_worker_changelist")
+        res = self.client.get(url)
+
+        self.assertContains(res, self.worker)
