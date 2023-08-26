@@ -104,7 +104,7 @@ class PrivateWorkerTests(TestCase):
         )
         self.assertTemplateUsed(response, "team_manager/worker_list.html")
 
-    def test_receive_worker_by_search_bar(self):
+    def test_receive_worker_by_username(self):
         get_user_model().objects.create(
             username="user1",
             password="user10987"
