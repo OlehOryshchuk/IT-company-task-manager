@@ -26,7 +26,7 @@ class WorkerSearchForm(forms.Form):
         required=False,
         widget=forms.TextInput(
             attrs={
-                "placeholder": "Search by worker's username",
+                "placeholder": "Search by worker username",
                 "size": 30,
             }
         )
@@ -77,7 +77,7 @@ class TeamCreationForm(forms.ModelForm):
         }
 
 
-class TeamJoinRemoveForm(forms.ModelForm):
+class TeamJoinLeaveForm(forms.ModelForm):
     class Meta:
         model = Team
         fields = ["members"]
