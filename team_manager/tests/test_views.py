@@ -11,3 +11,10 @@ CREATE_WORKER = reverse_lazy("team_manager:worker-create")
 
 TEAM_LIST = reverse_lazy("team_manager:team-list")
 CREATE_TEAM = reverse_lazy("team_manager:team-create")
+
+
+class PublicPositionTest(TestCase):
+    def test_position_login_required(self):
+        response = self.client.get(POSITION_LIST)
+
+        self.assertNotEqual(response.status_code, 200)
