@@ -63,3 +63,12 @@ class PrivatePositionTest(TestCase):
             position_list[0].name,
             searched.name
         )
+
+
+class PublicWorkerTest(TestCase):
+    def test_worker_login_required(self):
+
+        response = self.client.get(WORKER_LIST)
+
+        self.assertNotEqual(response.status_code, 200)
+
