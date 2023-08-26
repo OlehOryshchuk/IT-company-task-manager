@@ -43,3 +43,9 @@ class AdminSiteTest(TestCase):
         res = self.client.get(url)
 
         self.assertContains(res, self.worker)
+
+    def test_admin_change_page_displays_worker_position(self):
+        url = reverse("admin:team_manager_worker_change", args=[self.worker.id])
+        res = self.client.get(url)
+
+        self.assertContains(res, self.worker.position)
