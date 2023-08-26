@@ -49,3 +49,12 @@ class AdminSiteTest(TestCase):
         res = self.client.get(url)
 
         self.assertContains(res, self.worker.position)
+
+    def test_admin_add_page_worker_displays_position_fields(self):
+
+        url = reverse("admin:team_manager_worker_add")
+        res = self.client.get(url)
+
+        self.assertContains(res, "Position")
+        self.assertContains(res, "First name")
+        self.assertContains(res, "Last name")
