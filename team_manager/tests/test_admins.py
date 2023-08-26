@@ -1,5 +1,4 @@
 from django.test import TestCase
-from django.contrib.admin.sites import AdminSite
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
@@ -21,6 +20,13 @@ class AdminSiteTest(TestCase):
             last_name="driver_last_name",
             position=self.position,
         )
+
+        self.team = Team.objects.create(
+            name="Team1",
+            description="Team1 description",
+            owner=self.worker
+        )
+        self.team.members.add(self.worker)
 
     def test_admin_position_list_has_position(self):
         url = reverse("admin:team_manager_position_changelist")
@@ -58,3 +64,11 @@ class AdminSiteTest(TestCase):
         self.assertContains(res, "Position")
         self.assertContains(res, "First name")
         self.assertContains(res, "Last name")
+
+    def test_admin_team_list(self):
+        url = reverse("admin:team_manager_team_changelist")
+        response = self.client.get(url)
+
+        expected_fields = [self.team.name, self.team.owner, self.team.description]
+        for field in expected_fields:
+            self.assertContains(response, field)
