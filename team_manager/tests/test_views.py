@@ -161,4 +161,15 @@ class PrivateWorkerTests(TestCase):
         self.assertContains(response, reverse("team_manager:worker-update", args=[self.user.id]))
         self.assertContains(response, reverse("team_manager:worker-delete", args=[self.user.id]))
 
+    def test_view_other_workers_detail_page_with_no_update_delete_actions(self):
+        other_worker = get_user_model().objects.create_user(
+            username="other", password="other123", position=self.position
+        )
+        url = reverse("team_manager:worker-detail", args=[other_worker.id])
 
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertNotContains(response, reverse("team_manager:worker-update", args=[other_worker.id]))
+        self.assertNotContains(response, reverse("team_manager:worker-delete", args=[other_worker.id]))
