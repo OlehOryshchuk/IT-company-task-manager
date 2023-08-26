@@ -99,7 +99,29 @@ class PrivateWorkerTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            list(response.context["workers_list"]),
+            list(response.context["worker_list"]),
             list(workers)
         )
-        self.assertTemplateUsed(response, "team_manager:worker_list.html")
+        self.assertTemplateUsed(response, "team_manager/worker_list.html")
+
+    def test_receive_worker_by_search_bar(self):
+        get_user_model().objects.create(
+            username="user1",
+            password="user10987"
+        )
+        get_user_model().objects.create(
+            username="user2",
+            password="user20987"
+        )
+
+        response = self.client.get(WORKER_LIST, data={
+            "username": "user2"
+        })
+
+        self.assertEqual(response.status_code, 200)
+        worker_list = response.context["worker_list"]
+        self.assertEqual(len(worker_list), 1)
+        self.assertEqual(
+            worker_list[0].username,
+            "user2"
+        )
