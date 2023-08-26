@@ -77,8 +77,10 @@ class PrivateWorkerTests(TestCase):
     def setUp(self) -> None:
         self.client = Client()
 
+        self.position = Position.objects.create(name="position")
+
         self.user = get_user_model().objects.create_user(
-            username="test_username", password="test_1234"
+            username="test_username", password="test_1234", position=self.position
         )
         self.client.force_login(self.user)
 
@@ -148,3 +150,15 @@ class PrivateWorkerTests(TestCase):
             worker_list[0].username,
             self.user.username
         )
+
+    def test_view_own_detail_page_with_update_delete_actions(self):
+        url = reverse("team_manager:worker-detail", args=[self.user.id])
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertContains(response, reverse("team_manager:worker-update", args=[self.user.id]))
+        self.assertContains(response, reverse("team_manager:worker-delete", args=[self.user.id]))
+
+
