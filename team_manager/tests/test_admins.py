@@ -72,3 +72,13 @@ class AdminSiteTest(TestCase):
         expected_fields = [self.team.name, self.team.owner, self.team.description]
         for field in expected_fields:
             self.assertContains(response, field)
+
+    def test_admin_team_list_search_by_team_name(self):
+        Team.objects.create(name="Team2", owner=self.worker).members.add(self.worker)
+
+        url = reverse("admin:team_manager_team_changelist")
+
+        response = self.client.get(url, {"q": self.team.name.lower()})
+
+        changelist = response.context['cl']
+        self.assertIn(self.team, changelist.queryset)
