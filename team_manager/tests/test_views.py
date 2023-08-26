@@ -47,7 +47,7 @@ class PrivatePositionTest(TestCase):
         )
         self.assertTemplateUsed(response, "team_manager/position_list.html")
 
-    def test_receive_manufacturers_by_search_bar(self):
+    def test_receive_positions_by_search_bar(self):
         Position.objects.create(name="Position1")
         Position.objects.create(name="Position2")
         searched = Position.objects.create(name="Position3")
