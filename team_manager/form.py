@@ -13,7 +13,7 @@ class PositionSearchForm(forms.Form):
         required=False,
         widget=forms.TextInput(
             attrs={
-                "placeholder": "Search by position's name"
+                "placeholder": "Search by position name"
             }
         )
     )
