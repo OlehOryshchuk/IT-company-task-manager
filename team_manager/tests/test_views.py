@@ -66,11 +66,12 @@ class PrivatePositionTest(TestCase):
 
 
 class PublicWorkerTest(TestCase):
-    def test_worker_login_required(self):
+    def test_worker_list_login_required(self):
 
         response = self.client.get(WORKER_LIST)
 
         self.assertNotEqual(response.status_code, 200)
+        self.assertRedirects(response, "/accounts/login/?next=/workers/")
 
 
 class PrivateWorkerTests(TestCase):
