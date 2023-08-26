@@ -88,6 +88,14 @@ class PublicWorkerTest(TestCase):
         self.assertNotEqual(response.status_code, 200)
         self.assertRedirects(response, "/accounts/login/?next=/worker/1/detail")
 
+    def test_worker_create_page_login_required(self):
+        url = reverse("team_manager:worker-create")
+
+        response = self.client.get(url)
+
+        self.assertNotEqual(response.status_code, 200)
+        self.assertRedirects(response, "/accounts/login/?next=/worker/create/")
+
 
 class PrivateWorkerTest(TestCase):
     def setUp(self) -> None:
