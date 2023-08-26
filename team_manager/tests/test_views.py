@@ -46,3 +46,20 @@ class PrivatePositionTest(TestCase):
             list(positions)
         )
         self.assertTemplateUsed(response, "team_manager/position_list.html")
+
+    def test_receive_manufacturers_by_search_bar(self):
+        Position.objects.create(name="Position1")
+        Position.objects.create(name="Position2")
+        searched = Position.objects.create(name="Position3")
+
+        response = self.client.get(POSITION_LIST, data={
+            "name": searched.name
+        })
+
+        self.assertEqual(response.status_code, 200)
+        position_list = response.context["position_list"]
+        self.assertEqual(len(position_list), 1)
+        self.assertEqual(
+            position_list[0].name,
+            searched.name
+        )
