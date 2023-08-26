@@ -66,12 +66,27 @@ class PrivatePositionTest(TestCase):
 
 
 class PublicWorkerTest(TestCase):
+
+    def setUp(self) -> None:
+        self.user = get_user_model().objects.create_user(
+            username="admin",
+            password="admin123"
+        )
+
     def test_worker_list_login_required(self):
 
         response = self.client.get(WORKER_LIST)
 
         self.assertNotEqual(response.status_code, 200)
         self.assertRedirects(response, "/accounts/login/?next=/workers/")
+
+    def test_worker_detail_page_login_required(self):
+        url = reverse("team_manager:worker-detail", args=[self.user.id])
+
+        response = self.client.get(url)
+
+        self.assertNotEqual(response.status_code, 200)
+        self.assertRedirects(response, "/accounts/login/?next=/worker/1/detail")
 
 
 class PrivateWorkerTests(TestCase):
