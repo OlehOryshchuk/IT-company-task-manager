@@ -36,6 +36,7 @@ class WorkerAdmin(UserAdmin):
 class TeamAdmin(admin.ModelAdmin):
     list_display = [
         "name",
+        "owner",
         "description",
     ]
     search_fields = ["name"]
