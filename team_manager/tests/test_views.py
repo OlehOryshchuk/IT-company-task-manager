@@ -89,7 +89,7 @@ class PublicWorkerTest(TestCase):
         self.assertRedirects(response, "/accounts/login/?next=/worker/1/detail")
 
 
-class PrivateWorkerTests(TestCase):
+class PrivateWorkerTest(TestCase):
     def setUp(self) -> None:
         self.client = Client()
 
@@ -189,3 +189,24 @@ class PrivateWorkerTests(TestCase):
 
         self.assertNotContains(response, reverse("team_manager:worker-update", args=[other_worker.id]))
         self.assertNotContains(response, reverse("team_manager:worker-delete", args=[other_worker.id]))
+
+    def test_create_worker(self):
+        position = Position.objects.create(name="UniquePosition")
+
+        form_data = {
+            "username": "UniqueUsername",
+            "password1": "test_1234",
+            "password2": "test_1234",
+            "position": position.id,
+            "first_name": "TestName",
+            "last_name": "TestLastName",
+        }
+
+        response = self.client.post(CREATE_WORKER, data=form_data)
+        self.assertRedirects(
+            response,
+            reverse("team_manager:worker-list"),
+            target_status_code=200,
+            status_code=302
+        )
+        self.assertTrue(get_user_model().objects.last().username == form_data["username"])
