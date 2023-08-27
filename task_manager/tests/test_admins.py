@@ -67,3 +67,27 @@ class AdminSiteTest(TestCase):
         self.assertContains(response, deadline,)
         self.assertContains(response, new_task.is_completed,)
         self.assertContains(response, new_task.priority.capitalize())
+
+    def test_task_admin_search_by_name(self):
+        task1 = Task.objects.create(
+            name="task_1",
+            description="Task for testing",
+            deadline=datetime.today().date(),
+            task_type=self.task_type,
+            owner=self.admin_user,
+        )
+        task2 = Task.objects.create(
+            name="task_2",
+            description="Task for testing",
+            deadline=datetime.today().date(),
+            task_type=self.task_type,
+            owner=self.admin_user,
+        )
+
+        url = reverse("admin:task_manager_task_changelist")
+
+        response = self.client.get(url, {"q": task1.name.lower()})
+
+        changelist = response.context['cl']
+        self.assertEqual(task1.name, changelist.queryset.first().name)
+        self.assertNotIn(task2, changelist.queryset)
