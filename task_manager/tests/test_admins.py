@@ -164,3 +164,30 @@ class AdminSiteTest(TestCase):
         changelist = response.context['cl']
         self.assertEqual(project1.name, changelist.queryset.first().name)
         self.assertNotIn(project2, changelist.queryset)
+
+    def test_project_admin_filter_by_tag(self):
+        tag1 = Tag.objects.create(name="tag1")
+        tag2 = Tag.objects.create(name="tag2")
+
+        project1 = Project.objects.create(
+            name="project_1",
+            description="Project for testing",
+            deadline=datetime.today().date(),
+            owner=self.admin_user,
+        )
+        project2 = Project.objects.create(
+            name="project_2",
+            description="Project for testing",
+            deadline=datetime.today().date(),
+            owner=self.admin_user,
+        )
+        project1.tags.add(tag1)
+        project2.tags.add(tag2)
+
+        url = reverse("admin:task_manager_project_changelist")
+
+        response = self.client.get(url, {"tags__projects__id__exact": tag1.id})
+
+        changelist = response.context['cl']
+        self.assertEqual(project1, changelist.queryset.first())
+        self.assertNotIn(project2, changelist.queryset.all())
