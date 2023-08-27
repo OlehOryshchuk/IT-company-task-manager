@@ -24,4 +24,13 @@ class TaskFormTest(TestCase):
         self.assertTrue(self.filter_form.fields["task_type"].required is False)
         self.assertTrue(self.filter_form.fields["is_completed"].required is False)
 
+    def test_filter_form_field_task_type(self):
+        TaskType.objects.create(name="bug")
+        TaskType.objects.create(name="feature")
 
+        filter_form = TaskFilterForm()
+
+        self.assertEqual(
+            list(filter_form.fields["task_type"].queryset.all()),
+            list(TaskType.objects.all())
+        )
