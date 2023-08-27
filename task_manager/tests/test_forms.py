@@ -34,3 +34,11 @@ class TaskFormTest(TestCase):
             list(filter_form.fields["task_type"].queryset.all()),
             list(TaskType.objects.all())
         )
+
+    def test_search_form_field_name(self):
+        search_form = TaskSearchForm()
+        rendered_html = search_form.as_p()
+
+        self.assertEqual(search_form.fields["name"].required, False)
+        self.assertEqual(search_form.fields["name"].label, "")
+        self.assertIn('placeholder="Search by task name"', rendered_html)
