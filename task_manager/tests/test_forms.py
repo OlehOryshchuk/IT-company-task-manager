@@ -23,6 +23,7 @@ class TaskFormTest(TestCase):
             username="testuser", password="test123"
         )
         self.task_type = TaskType.objects.create(name="main_task_type")
+        self.change_status_form = TaskChangeStatusForm(user=self.user)
 
     def test_filter_form_empty_label_and_required_should_be_false(self):
         self.assertEqual(self.filter_form.fields["task_type"].empty_label, "Filter by task type")
@@ -102,3 +103,9 @@ class TaskFormTest(TestCase):
             [self.user, user2, user3]
         )
         self.assertTrue(user4 not in create_form.fields["assignees"].queryset)
+
+    def test_change_status_form_fields_and_their_attributes(self):
+        self.assertTrue(self.change_status_form.fields.get('assignees'))
+        self.assertTrue(self.change_status_form.fields.get('is_completed'))
+        self.assertTrue(self.change_status_form.fields["assignees"].required is False)
+        self.assertTrue(self.change_status_form.fields["is_completed"].required is False)
