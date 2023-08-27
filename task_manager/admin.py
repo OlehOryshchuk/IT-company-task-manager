@@ -27,9 +27,10 @@ class TaskAdmin(admin.ModelAdmin):
 class ProjectAdmin(admin.ModelAdmin):
     list_display = [
         "name",
-        "is_completed",
-        "priority",
+        "description",
         "deadline",
+        "is_completed",
+        "priority"
     ]
     search_fields = ["name"]
     list_filter = ["name"]
