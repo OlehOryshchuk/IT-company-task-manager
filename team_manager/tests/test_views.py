@@ -247,3 +247,11 @@ class PublicTeamTest(TestCase):
         self.assertNotEqual(response.status_code, 200)
         self.assertRedirects(response, "/accounts/login/?next=/team/1/detail")
 
+    def test_team_create_page_login_required(self):
+        url = reverse("team_manager:team-create")
+
+        response = self.client.get(url)
+
+        self.assertNotEqual(response.status_code, 200)
+        self.assertRedirects(response, "/accounts/login/?next=/team/create/")
+
