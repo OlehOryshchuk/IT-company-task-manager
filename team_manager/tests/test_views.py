@@ -285,3 +285,37 @@ class PrivateTeamTest(TestCase):
             list(teams)
         )
         self.assertTemplateUsed(response, "team_manager/team_list.html")
+
+    def test_receive_list_of_teams_by_team_member(self):
+        team_member1 = get_user_model().objects.create(
+            username="user1",
+            password="user123",
+            position=self.position
+        )
+        team_member2 = get_user_model().objects.create(
+            username="user2",
+            password="user1234",
+            position=self.position
+        )
+        team1 = Team.objects.create(
+            name="team1",
+            owner=self.user
+        )
+        team2 = Team.objects.create(
+            name="team2",
+            owner=self.user
+        )
+        team1.members.add(team_member1)
+        team2.members.add(team_member2)
+
+        response = self.client.get(TEAM_LIST, data={
+            "members": team_member1.id
+        })
+
+        self.assertEqual(response.status_code, 200)
+        team_list = response.context["team_list"]
+        self.assertEqual(len(team_list), 1)
+        self.assertEqual(
+            team_list[0].name,
+            team1.name
+        )
