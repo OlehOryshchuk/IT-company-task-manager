@@ -2,8 +2,9 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from datetime import datetime, timedelta
+from taggit.models import Tag
+
 from ..models import TaskType, Task, Project
-from team_manager.models import Team
 
 
 class AdminSiteTest(TestCase):
@@ -91,3 +92,32 @@ class AdminSiteTest(TestCase):
         changelist = response.context['cl']
         self.assertEqual(task1.name, changelist.queryset.first().name)
         self.assertNotIn(task2, changelist.queryset)
+
+    def test_task_admin_filter_by_tag(self):
+        tag1 = Tag.objects.create(name="tag1")
+        tag2 = Tag.objects.create(name="tag2")
+
+        task1 = Task.objects.create(
+            name="task_1",
+            description="Task for testing",
+            deadline=datetime.today().date(),
+            task_type=self.task_type,
+            owner=self.admin_user,
+        )
+        task2 = Task.objects.create(
+            name="task_2",
+            description="Task for testing",
+            deadline=datetime.today().date(),
+            task_type=self.task_type,
+            owner=self.admin_user,
+        )
+        task1.tags.add(tag1)
+        task2.tags.add(tag2)
+
+        url = reverse("admin:task_manager_task_changelist")
+
+        response = self.client.get(url, {"tags__tasks__id__exact": tag1.id})
+
+        changelist = response.context['cl']
+        self.assertEqual(task1, changelist.queryset.first())
+        self.assertNotIn(task2, changelist.queryset.all())
