@@ -255,3 +255,6 @@ class PublicTeamTest(TestCase):
         self.assertNotEqual(response.status_code, 200)
         self.assertRedirects(response, "/accounts/login/?next=/team/create/")
 
+
+class PrivateTeamTest(TestCase):
+
