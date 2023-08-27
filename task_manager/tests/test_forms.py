@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+from datetime import datetime
 
 from ..form import (
     TaskFilterForm,
@@ -12,7 +13,7 @@ from ..form import (
 
     valid_deadline
 )
-from ..models import TaskType
+from ..models import TaskType, Task
 from team_manager.models import Team
 
 
@@ -109,3 +110,40 @@ class TaskFormTest(TestCase):
         self.assertTrue(self.change_status_form.fields.get('is_completed'))
         self.assertTrue(self.change_status_form.fields["assignees"].required is False)
         self.assertTrue(self.change_status_form.fields["is_completed"].required is False)
+
+    def test_change_status_form_field_assignees(self):
+        task = Task.objects.create(
+            name="task_name",
+            deadline=datetime.today().date(),
+            task_type=self.task_type,
+            owner=self.user,
+        )
+        new_team = Team.objects.create(
+            name="NewTeam", owner=self.user
+        )
+        user2 = get_user_model().objects.create(username="user2", password="user2123")
+        user3 = get_user_model().objects.create(username="user3", password="user3123")
+        user4 = get_user_model().objects.create(username="user4", password="user4123")
+
+        new_team.members.add(user2, user3, self.user)
+
+        form_data = {
+            "assignees": [self.user.id, user2.id],
+            "is_completed": True,
+        }
+
+        changed_task = TaskChangeStatusForm(instance=task, user=self.user, data=form_data)
+
+        self.assertTrue(changed_task.is_valid())
+        changed_task.save()
+
+        # user4 not supposed to be in assignees.queryset because he is not in same team
+        self.assertEqual(
+            list(changed_task.fields["assignees"].queryset),
+            [self.user, user2, user3]
+        )
+        self.assertEqual(
+            list(task.assignees.all()),
+            [self.user, user2]
+        )
+        self.assertTrue(user4 not in changed_task.fields["assignees"].queryset)
