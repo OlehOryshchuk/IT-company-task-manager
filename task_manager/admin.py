@@ -33,4 +33,4 @@ class ProjectAdmin(admin.ModelAdmin):
         "priority"
     ]
     search_fields = ["name"]
-    list_filter = ["name"]
+    list_filter = ["tags__name"]
