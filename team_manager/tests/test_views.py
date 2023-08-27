@@ -382,4 +382,3 @@ class PrivateTeamTest(TestCase):
 
         self.assertNotContains(response, reverse("team_manager:team-update", args=[self.team.id]))
         self.assertNotContains(response, reverse("team_manager:team-delete", args=[self.team.id]))
-
