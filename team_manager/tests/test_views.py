@@ -269,6 +269,11 @@ class PrivateTeamTest(TestCase):
         )
         self.client.force_login(self.user)
 
+        self.team = Team.objects.create(
+            name="TestTeam",
+            owner=self.user
+        )
+
         self.is_paginated_by = 5
 
     def test_receive_list_of_teams(self):
@@ -348,3 +353,14 @@ class PrivateTeamTest(TestCase):
             team_list[0].projects.first().name,
             project1.name
         )
+
+    def test_view_own_team_page_with_update_delete_actions(self):
+        url = reverse("team_manager:team-detail", args=[self.team.id])
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertContains(response, reverse("team_manager:team-update", args=[self.team.id]))
+        self.assertContains(response, reverse("team_manager:team-delete", args=[self.team.id]))
+
