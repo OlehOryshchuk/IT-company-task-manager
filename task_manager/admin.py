@@ -13,7 +13,7 @@ class TaskTypeAdmin(admin.ModelAdmin):
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
     search_fields = ["name"]
-    list_filter = ["tags"]
+    list_filter = ["tags__tasks"]
     list_display = [
         "name",
         "description",
