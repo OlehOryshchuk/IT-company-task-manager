@@ -22,11 +22,25 @@ class AdminSiteTest(TestCase):
         self.assertContains(response, new_task_type.name)
 
     def test_task_type_admin_search_by_name(self):
-        new_task_type = TaskType.objects.create(name="Bug")
+        task_type1 = TaskType.objects.create(name="Bug")
+        task_type2 = TaskType.objects.create(name="Bug")
 
         url = reverse("admin:task_manager_tasktype_changelist")
 
-        response = self.client.get(url, {"q": new_task_type.name.lower()})
+        response = self.client.get(url, {"q": task_type1.name.lower()})
 
         changelist = response.context['cl']
-        self.assertEqual(new_task_type.name, changelist.queryset.first().name)
+        self.assertEqual(task_type1.name, changelist.queryset.first().name)
+        self.assertNotIn(task_type2, changelist.queryset)
+
+    def test_task_type_admin_filter_by_name(self):
+        task_type1 = TaskType.objects.create(name="Bug")
+        task_type2 = TaskType.objects.create(name="Feature")
+
+        url = reverse("admin:task_manager_tasktype_changelist")
+
+        response = self.client.get(url, {"name__exact": task_type1.name})
+
+        changelist = response.context['cl']
+        self.assertEqual(task_type1.name, changelist.queryset.first().name)
+        self.assertNotIn(task_type2, changelist.queryset)
