@@ -57,7 +57,6 @@ class AdminSiteTest(TestCase):
             task_type=self.task_type,
             owner=self.admin_user,
         )
-        new_task.assignees.add(self.admin_user)
 
         url = reverse("admin:task_manager_task_changelist")
 
@@ -132,7 +131,6 @@ class AdminSiteTest(TestCase):
             deadline=datetime.today().date(),
             owner=self.admin_user,
         )
-        new_project.teams.add(new_team)
 
         url = reverse("admin:task_manager_project_changelist")
 
@@ -144,3 +142,25 @@ class AdminSiteTest(TestCase):
         self.assertContains(response, deadline,)
         self.assertContains(response, new_project.is_completed,)
         self.assertContains(response, new_project.priority.capitalize())
+
+    def test_project_admin_search_by_name(self):
+        project1 = Project.objects.create(
+            name="project_1",
+            description="Project for testing",
+            deadline=datetime.today().date(),
+            owner=self.admin_user,
+        )
+        project2 = Project.objects.create(
+            name="project_2",
+            description="Project for testing",
+            deadline=datetime.today().date(),
+            owner=self.admin_user,
+        )
+
+        url = reverse("admin:task_manager_project_changelist")
+
+        response = self.client.get(url, {"q": project1.name.lower()})
+
+        changelist = response.context['cl']
+        self.assertEqual(project1.name, changelist.queryset.first().name)
+        self.assertNotIn(project2, changelist.queryset)
