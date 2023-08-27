@@ -46,7 +46,7 @@ class TaskFormTest(TestCase):
         self.assertEqual(search_form.fields["name"].label, "")
         self.assertIn('placeholder="Search by task name"', rendered_html)
 
-    def test_form_valid_data(self):
+    def test_create_form_valid_data(self):
         task_type = TaskType.objects.create(name="bug")
         form_data = {
             "name": "Test Task",
@@ -61,7 +61,7 @@ class TaskFormTest(TestCase):
         form = TaskCreateForm(data=form_data, user=self.user)
         self.assertTrue(form.is_valid())
 
-    def test_form_invalid_data(self):
+    def test_create_form_invalid_data(self):
         form_data = {
             "name": "Test Task",
             "priority": "high",
