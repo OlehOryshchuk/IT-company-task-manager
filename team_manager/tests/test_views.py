@@ -1,8 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase, Client
 from django.urls import reverse_lazy, reverse
+from datetime import datetime
 
 from ..models import Position, Team
+from task_manager.models import Project
 
 POSITION_LIST = reverse_lazy("team_manager:position-list")
 
@@ -318,4 +320,31 @@ class PrivateTeamTest(TestCase):
         self.assertEqual(
             team_list[0].name,
             team1.name
+        )
+
+    def test_receive_list_of_teams_that_are_working_on_project(self):
+        project1 = Project.objects.create(
+            name="project1",
+            owner=self.user,
+            deadline=datetime.today().date()
+        )
+
+        for i in range(1, 11):
+            new_team = Team.objects.create(
+                name=f"team{i}",
+                owner=self.user
+            )
+            if i % 2 == 0:
+                project1.teams.add(new_team.id)
+
+        response = self.client.get(TEAM_LIST, data={
+            "project": project1.id
+        })
+
+        self.assertEqual(response.status_code, 200)
+        team_list = response.context["team_list"]
+        self.assertEqual(len(team_list), 5)
+        self.assertEqual(
+            team_list[0].projects.first().name,
+            project1.name
         )
