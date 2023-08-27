@@ -364,3 +364,22 @@ class PrivateTeamTest(TestCase):
         self.assertContains(response, reverse("team_manager:team-update", args=[self.team.id]))
         self.assertContains(response, reverse("team_manager:team-delete", args=[self.team.id]))
 
+    def test_view_other_team_page_with_no_update_delete_actions(self):
+        new_user = get_user_model().objects.create(
+            username="NewUser",
+            password="NewUser123",
+            position=self.position
+        )
+        new_team = Team.objects.create(
+            name="NewTeam",
+            owner=new_user
+        )
+        url = reverse("team_manager:team-detail", args=[new_team.id])
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertNotContains(response, reverse("team_manager:team-update", args=[self.team.id]))
+        self.assertNotContains(response, reverse("team_manager:team-delete", args=[self.team.id]))
+
