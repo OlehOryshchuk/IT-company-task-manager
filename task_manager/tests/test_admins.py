@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from taggit.models import Tag
 
 from ..models import TaskType, Task, Project
+from team_manager.models import Team
 
 
 class AdminSiteTest(TestCase):
@@ -121,3 +122,25 @@ class AdminSiteTest(TestCase):
         changelist = response.context['cl']
         self.assertEqual(task1, changelist.queryset.first())
         self.assertNotIn(task2, changelist.queryset.all())
+
+    def test_admin_project_list_has_all_fields(self):
+        new_team = Team.objects.create(name="newTeam", owner=self.admin_user)
+        new_team.members.add(self.admin_user)
+        new_project = Project.objects.create(
+            name="new_task-type",
+            description="Task for testing",
+            deadline=datetime.today().date(),
+            owner=self.admin_user,
+        )
+        new_project.teams.add(new_team)
+
+        url = reverse("admin:task_manager_project_changelist")
+
+        response = self.client.get(url)
+
+        deadline = new_project.deadline.strftime("%b. %d, %Y")
+        self.assertContains(response, new_project.name)
+        self.assertContains(response, new_project.description)
+        self.assertContains(response, deadline,)
+        self.assertContains(response, new_project.is_completed,)
+        self.assertContains(response, new_project.priority.capitalize())
