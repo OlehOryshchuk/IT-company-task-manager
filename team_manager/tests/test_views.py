@@ -218,3 +218,19 @@ class PrivateWorkerTest(TestCase):
             status_code=302
         )
         self.assertTrue(get_user_model().objects.last().username == form_data["username"])
+
+
+class PublicTeamTest(TestCase):
+    def setUp(self) -> None:
+        self.user = get_user_model().objects.create_user(
+            username="admin",
+            password="admin123"
+        )
+
+    def test_team_list_page_login_required(self):
+
+        response = self.client.get(TEAM_LIST)
+
+        self.assertNotEqual(response.status_code, 200)
+        self.assertRedirects(response, "/accounts/login/?next=/teams/")
+
