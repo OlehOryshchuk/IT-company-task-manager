@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-from datetime import datetime
+from datetime import datetime, timedelta
+from django.core.exceptions import ValidationError
 
 from ..form import (
     TaskFilterForm,
@@ -189,3 +190,18 @@ class ProjectFormTest(TestCase):
         created_project = Project.objects.last()
 
         self.assertTrue(created_project is None)
+
+
+class ValidDeadlineTest(TestCase):
+    def test_valid_deadline_future(self):
+        future_deadline = datetime.today().date() + timedelta(days=7)
+        self.assertEqual(valid_deadline(future_deadline), future_deadline)
+
+    def test_valid_deadline_past(self):
+        past_deadline = datetime.today().date() - timedelta(days=7)
+        with self.assertRaises(ValidationError) as error:
+            valid_deadline(past_deadline)
+        self.assertEqual(
+            *error.exception,
+            "Deadline cannot be in the past!"
+        )
