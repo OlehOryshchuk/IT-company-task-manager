@@ -173,3 +173,19 @@ class ProjectFormTest(TestCase):
 
         self.assertEqual(created_project.name, form_data["name"])
         self.assertEqual(created_project.description, form_data["description"])
+
+    def test_create_form_invalid_submission(self):
+        form_data = {
+            "name": "Project",
+            "description": "Project for testing",
+            "priority": "high",
+            "owner": self.user
+        }
+
+        create_form = ProjectCreateForm(data=form_data)
+
+        self.assertFalse(create_form.is_valid())
+
+        created_project = Project.objects.last()
+
+        self.assertTrue(created_project is None)
