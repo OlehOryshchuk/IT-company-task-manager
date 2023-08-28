@@ -53,3 +53,10 @@ class PublicTaskViewTest(TestCase):
 
         self.assertNotEqual(response.status_code, 200)
         self.assertRedirects(response, "/accounts/login/?next=/task/task/filter/")
+
+    def test_task_list_page_is_login_required(self):
+        response = self.client.get(TASK_LIST)
+
+        self.assertNotEqual(response.status_code, 200)
+        self.assertRedirects(response, "/accounts/login/?next=/task/tasks/")
+
