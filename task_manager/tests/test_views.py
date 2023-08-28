@@ -84,3 +84,14 @@ class PublicTaskViewTest(TestCase):
             response,
             f"/accounts/login/?next=/task/task/{self.task.id}/update/"
         )
+
+    def test_task_delete_page_is_login_required(self):
+        url = reverse("task_manager:task-delete", args=[self.task.id])
+
+        response = self.client.get(url)
+
+        self.assertNotEqual(response.status_code, 200)
+        self.assertRedirects(
+            response,
+            f"/accounts/login/?next=/task/task/{self.task.id}/delete/"
+        )
