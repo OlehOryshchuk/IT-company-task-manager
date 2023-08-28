@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from datetime import datetime
+from datetime import date, datetime
 
 from .models import Task, Project, TaskType
 from team_manager.models import Team
@@ -33,7 +33,7 @@ class TaskSearchForm(forms.Form):
         label="",
         required=False,
         widget=forms.TextInput(attrs={
-            "placeholder": "Search by task's name"
+            "placeholder": "Search by task name"
         }
         )
     )
@@ -45,7 +45,7 @@ class ProjectSearchForm(forms.Form):
         label="",
         required=False,
         widget=forms.TextInput(attrs={
-            "placeholder": "Search by project's name"
+            "placeholder": "Search by project name"
         }
         )
     )
@@ -138,7 +138,7 @@ class ProjectCreateForm(forms.ModelForm):
         return valid_deadline(deadline)
 
 
-def valid_deadline(deadline: datetime) -> datetime:
+def valid_deadline(deadline: date) -> date:
     if deadline < datetime.today().date():
         raise ValidationError("Deadline cannot be in the past!")
 
