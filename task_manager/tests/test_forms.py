@@ -13,7 +13,7 @@ from ..form import (
 
     valid_deadline
 )
-from ..models import TaskType, Task
+from ..models import TaskType, Task, Project
 from team_manager.models import Team
 
 
@@ -147,3 +147,29 @@ class TaskFormTest(TestCase):
             [self.user, user2]
         )
         self.assertTrue(user4 not in changed_task.fields["assignees"].queryset)
+
+
+class ProjectFormTest(TestCase):
+    def setUp(self) -> None:
+        self.user = get_user_model().objects.create(
+            username="MainUser", password="Mainpass123"
+        )
+
+    def test_create_form_valid_submission(self):
+        form_data = {
+            "name": "Project",
+            "description": "Project for testing",
+            "deadline": datetime.today().date(),
+            "priority": "high",
+            "owner": self.user
+        }
+
+        create_form = ProjectCreateForm(data=form_data)
+
+        self.assertTrue(create_form.is_valid())
+        create_form.save()
+
+        created_project = Project.objects.last()
+
+        self.assertEqual(created_project.name, form_data["name"])
+        self.assertEqual(created_project.description, form_data["description"])
