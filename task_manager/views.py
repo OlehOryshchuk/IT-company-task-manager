@@ -2,6 +2,7 @@ import datetime
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.views import generic
 from django.db.models import QuerySet
 
@@ -22,6 +23,7 @@ def valid_deadline(deadline: datetime) -> bool:
     return False
 
 
+@login_required()
 def task_filter_view(request):
     if request.GET.get("reset"):
         request.session.pop("task_filter", None)  # Remove the session filter data
