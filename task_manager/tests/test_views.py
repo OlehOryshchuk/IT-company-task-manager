@@ -48,6 +48,14 @@ class PrivateTaskType(TestCase):
 
 class PublicTaskViewTest(TestCase):
 
+    def setUp(self) -> None:
+        self.task_type = TaskType.objects.create(name="Test")
+        self.task = Task.objects.create(
+            name="task_test",
+            deadline=datetime.today().date(),
+            task_type=self.task_type
+        )
+
     def test_task_filter_page_is_login_required(self):
         response = self.client.get(TASK_FILTER)
 
@@ -65,3 +73,14 @@ class PublicTaskViewTest(TestCase):
 
         self.assertNotEqual(response.status_code, 200)
         self.assertRedirects(response, "/accounts/login/?next=/task/task/create/")
+
+    def test_task_update_page_is_login_required(self):
+        url = reverse("task_manager:task-update", args=[self.task.id])
+
+        response = self.client.get(url)
+
+        self.assertNotEqual(response.status_code, 200)
+        self.assertRedirects(
+            response,
+            f"/accounts/login/?next=/task/task/{self.task.id}/update/"
+        )
