@@ -39,7 +39,7 @@ urlpatterns = [
         name="task-update"
     ),
     path(
-        "task/<int:pk>/delete",
+        "task/<int:pk>/delete/",
         TaskDeleteView.as_view(),
         name="task-delete"
     ),
