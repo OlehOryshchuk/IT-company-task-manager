@@ -21,3 +21,25 @@ class PublicTaskTypeTest(TestCase):
 
         self.assertNotEqual(response.status_code, 200)
         self.assertRedirects(response, "/accounts/login/?next=/task/task_type/create/")
+
+
+class PrivateTaskType(TestCase):
+    def setUp(self) -> None:
+        self.user = get_user_model().objects.create(
+            username="MainUser", password="Main1234",
+        )
+        self.client.force_login(self.user)
+
+    def test_view_create_task_type_page(self):
+
+        post_response = self.client.post(TASK_TYPE_CREATE, data={"name": "Bug"})
+        get_response = self.client.get(TASK_TYPE_CREATE)
+
+        self.assertRedirects(
+            post_response,
+            reverse("task_manager:task-list"),
+            target_status_code=200,
+            status_code=302
+        )
+        self.assertTrue(TaskType.objects.last().name == "Bug")
+        self.assertTemplateUsed(get_response, "task_manager/task_type_form.html")
