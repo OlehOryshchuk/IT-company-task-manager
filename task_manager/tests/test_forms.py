@@ -205,3 +205,7 @@ class ValidDeadlineTest(TestCase):
             *error.exception,
             "Deadline cannot be in the past!"
         )
+
+    def test_valid_deadline_today_date(self):
+        today_deadline = datetime.today().date()
+        self.assertEqual(valid_deadline(today_deadline), today_deadline)
