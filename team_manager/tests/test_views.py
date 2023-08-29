@@ -88,7 +88,7 @@ class PublicWorkerTest(TestCase):
         response = self.client.get(url)
 
         self.assertNotEqual(response.status_code, 200)
-        self.assertRedirects(response, "/accounts/login/?next=/worker/1/detail")
+        self.assertRedirects(response, "/accounts/login/?next=/worker/1/detail/")
 
     def test_worker_create_page_login_required(self):
         url = reverse("team_manager:worker-create")
@@ -247,7 +247,7 @@ class PublicTeamTest(TestCase):
         response = self.client.get(url)
 
         self.assertNotEqual(response.status_code, 200)
-        self.assertRedirects(response, "/accounts/login/?next=/team/1/detail")
+        self.assertRedirects(response, "/accounts/login/?next=/team/1/detail/")
 
     def test_team_create_page_login_required(self):
         url = reverse("team_manager:team-create")
