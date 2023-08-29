@@ -269,3 +269,11 @@ class PublicProjectViewTest(TestCase):
         self.assertRedirects(
             response,
             f"/accounts/login/?next=/task/project/{self.project.id}/detail")
+
+    def test_project_create_page_is_login_required(self):
+        response = self.client.get(PROJECT_CREATE)
+
+        self.assertNotEqual(response.status_code, 200)
+        self.assertRedirects(
+            response,
+            f"/accounts/login/?next=/task/project/create/")
