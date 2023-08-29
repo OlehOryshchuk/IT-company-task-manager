@@ -25,7 +25,7 @@ urlpatterns = [
         name="worker-list",
     ),
     path(
-        "worker/<int:pk>/",
+        "worker/<int:pk>/detail/",
         WorkerDetailView.as_view(),
         name="worker-detail"
     ),
@@ -55,7 +55,7 @@ urlpatterns = [
         name="team-list",
     ),
     path(
-        "team/<int:pk>/",
+        "team/<int:pk>/detail/",
         TeamDetailView.as_view(),
         name="team-detail"
     ),
