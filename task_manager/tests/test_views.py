@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse_lazy, reverse
 from datetime import datetime
+from taggit.models import Tag
 
 from ..models import TaskType, Task, Project
 
@@ -174,4 +175,35 @@ class PrivateTaskViewTest(TestCase):
         self.assertEqual(
             task_list[0].task_type,
             searched_test.task_type
+        )
+
+    def test_receive_test_by_task_tag(self):
+        tag_1 = Tag.objects.create(name="task_1")
+        searched_tag = Tag.objects.create(name="searched_tag")
+
+        task_1 = Task.objects.create(
+                name=f"task_1",
+                deadline=datetime.today().date(),
+                task_type=self.task_type,
+                owner=self.user,
+            )
+        task_1.tags.add(tag_1)
+
+        searched_test = Task.objects.create(
+                name=f"Searched",
+                deadline=datetime.today().date(),
+                task_type=TaskType.objects.create(name="searched"),
+                owner=self.user,
+            )
+        searched_test.tags.add(searched_tag)
+
+        response = self.client.get(TASK_LIST, {"tags": searched_tag.name})
+
+        self.assertEqual(response.status_code, 200)
+        task_list = response.context["task_list"]
+
+        self.assertEqual(len(task_list), 1)
+        self.assertEqual(
+            task_list[0].tags.first().name,
+            searched_test.tags.first().name
         )
