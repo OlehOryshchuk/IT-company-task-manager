@@ -99,7 +99,7 @@ class PublicTaskViewTest(TestCase):
         )
 
 
-class PrivateProjectViewTest(TestCase):
+class PrivateTaskViewTest(TestCase):
     def setUp(self) -> None:
         self.user = get_user_model().objects.create(
             username="MainUser", password="Main1234"
@@ -297,3 +297,96 @@ class PublicProjectViewTest(TestCase):
         self.assertRedirects(
             response,
             f"/accounts/login/?next=/task/project/{self.project.id}/delete/")
+
+
+class PrivateProjectViewTest(TestCase):
+    def setUp(self) -> None:
+        self.user = get_user_model().objects.create(
+            username="MainUser", password="Main1234"
+        )
+        self.client.force_login(self.user)
+
+        self.team = Team.objects.create(
+            name="MainTeam",
+            owner=self.user,
+        )
+        self.team.members.add(self.user)
+
+        self.project = Project.objects.create(
+            name="MainProejct",
+            deadline=datetime.today().date(),
+            owner=self.user,
+        )
+        self.project.teams.add(self.team)
+
+        self.paginated = 5
+
+    def test_task_list_page(self):
+        for i in range(6):
+            Project.objects.create(
+                name=f"project{i}",
+                deadline=datetime.today().date(),
+                owner=self.user,
+            ).teams.add(self.team)
+
+        response = self.client.get(PROJECT_LIST)
+        projects = Project.objects.all()[:self.paginated]
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            list(response.context["project_list"]),
+            list(projects)
+        )
+        self.assertTemplateUsed(response, "task_manager/project_list.html")
+
+    def test_receive_project_by_name(self):
+        Project.objects.create(
+                name="project_1",
+                deadline=datetime.today().date(),
+                owner=self.user,
+        ).teams.add(self.team)
+        searched_project = Project.objects.create(
+                name="Searched",
+                deadline=datetime.today().date(),
+                owner=self.user,
+        )
+        searched_project.teams.add(self.team)
+
+        response = self.client.get(PROJECT_LIST, {"name": searched_project.name})
+
+        self.assertEqual(response.status_code, 200)
+        project_list = response.context["project_list"]
+
+        self.assertEqual(len(project_list), 1)
+        self.assertEqual(
+            project_list[0].name,
+            searched_project.name
+        )
+
+    def test_receive_team_projects(self):
+        new_team = Team.objects.create(name="TeamTest", owner=self.user)
+
+        new_project = Project.objects.create(
+                name="project_1",
+                deadline=datetime.today().date(),
+                owner=self.user,
+        )
+        searched_project = Project.objects.create(
+                name="Searched",
+                deadline=datetime.today().date(),
+                owner=self.user,
+        )
+
+        searched_project.teams.add(self.team)
+        new_project.teams.add(new_team)
+
+        response = self.client.get(PROJECT_LIST, {"team_projects": self.team.id})
+
+        self.assertEqual(response.status_code, 200)
+        project_list = response.context["project_list"]
+
+        self.assertEqual(len(project_list), 2)
+        self.assertNotIn(
+            new_team,
+            project_list
+        )
