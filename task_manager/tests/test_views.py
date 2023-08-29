@@ -95,3 +95,33 @@ class PublicTaskViewTest(TestCase):
             response,
             f"/accounts/login/?next=/task/task/{self.task.id}/delete/"
         )
+
+
+class PrivateTaskViewTest(TestCase):
+    def setUp(self) -> None:
+        self.user = get_user_model().objects.create(
+            username="MainUser", password="Main1234"
+        )
+        self.client.force_login(self.user)
+        self.task_type = TaskType.objects.create(name="MainType")
+
+        self.paginated = 5
+
+    def test_task_list_page(self):
+        for i in range(6):
+            Task.objects.create(
+                name=f"test{i}",
+                deadline=datetime.today().date(),
+                task_type=self.task_type,
+                owner=self.user,
+            )
+
+        response = self.client.get(TASK_LIST)
+        tasks = Task.objects.all()[:self.paginated]
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            list(response.context["task_list"]),
+            list(tasks)
+        )
+        self.assertTemplateUsed(response, "task_manager/task_list.html")
