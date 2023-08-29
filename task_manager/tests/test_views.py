@@ -5,6 +5,7 @@ from datetime import datetime
 from taggit.models import Tag
 
 from ..models import TaskType, Task, Project
+from team_manager.models import Team
 
 
 TASK_TYPE_CREATE = reverse_lazy("task_manager:task-type-create")
@@ -98,7 +99,7 @@ class PublicTaskViewTest(TestCase):
         )
 
 
-class PrivateTaskViewTest(TestCase):
+class PrivateProjectViewTest(TestCase):
     def setUp(self) -> None:
         self.user = get_user_model().objects.create(
             username="MainUser", password="Main1234"
@@ -233,3 +234,28 @@ class PrivateTaskViewTest(TestCase):
             task_list[0].name,
             searched_test.name
         )
+
+
+class PublicProjectViewTest(TestCase):
+    def setUp(self) -> None:
+        self.user = get_user_model().objects.create(
+            username="MainUser", password="Main1234"
+        )
+        self.team = Team.objects.create(
+            name="MainTeam",
+            owner=self.user,
+        )
+        self.team.members.add(self.user)
+
+        self.project = Project.objects.create(
+            name="MainProejct",
+            deadline=datetime.today().date(),
+            owner=self.user,
+        )
+        self.project.teams.add(self.team)
+
+    def test_project_list_page_is_login_required(self):
+        response = self.client.get(PROJECT_LIST)
+
+        self.assertNotEqual(response.status_code, 200)
+        self.assertRedirects(response, "/accounts/login/?next=/task/projects/")
