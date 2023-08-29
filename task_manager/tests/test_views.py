@@ -1,10 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse_lazy, reverse
-from datetime import datetime
+from datetime import datetime, timedelta
 from taggit.models import Tag
 
 from ..models import TaskType, Task, Project
+from ..views import valid_deadline
 from team_manager.models import Team
 
 
@@ -390,3 +391,21 @@ class PrivateProjectViewTest(TestCase):
             new_team,
             project_list
         )
+
+
+class ValidDeadlineTest(TestCase):
+
+    def test_valid_deadline_future(self):
+        future_deadline = datetime.today().date() + timedelta(days=7)
+        self.assertEqual(valid_deadline(future_deadline), False)
+
+    def test_valid_deadline_past(self):
+        past_deadline = datetime.today().date() - timedelta(days=7)
+        self.assertEqual(
+            valid_deadline(past_deadline),
+            True
+        )
+
+    def test_valid_deadline_today_date(self):
+        today_deadline = datetime.today().date()
+        self.assertEqual(valid_deadline(today_deadline), False)
