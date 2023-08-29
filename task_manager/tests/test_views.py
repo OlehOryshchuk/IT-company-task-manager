@@ -125,3 +125,28 @@ class PrivateTaskViewTest(TestCase):
             list(tasks)
         )
         self.assertTemplateUsed(response, "task_manager/task_list.html")
+
+    def test_receive_test_by_name(self):
+        test_1 = Task.objects.create(
+                name=f"test_1",
+                deadline=datetime.today().date(),
+                task_type=self.task_type,
+                owner=self.user,
+            )
+        searched_test = Task.objects.create(
+                name=f"Searched",
+                deadline=datetime.today().date(),
+                task_type=TaskType.objects.create(name="searched"),
+                owner=self.user,
+            )
+
+        response = self.client.get(TASK_LIST, {"name": searched_test.name})
+
+        self.assertEqual(response.status_code, 200)
+        task_list = response.context["task_list"]
+
+        self.assertEqual(len(task_list), 1)
+        self.assertEqual(
+            task_list[0].name,
+            searched_test.name
+        )
