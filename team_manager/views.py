@@ -89,7 +89,10 @@ class WorkerUpdateView(LoginRequiredMixin, generic.UpdateView):
     ]
 
     def get_success_url(self):
-        return reverse_lazy("team_manager:worker-detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy(
+            "team_manager:worker-detail",
+            kwargs={"pk": self.object.pk}
+        )
 
 
 class WorkerDeleteView(LoginRequiredMixin, generic.DeleteView):
@@ -199,7 +202,10 @@ class TeamUpdateView(LoginRequiredMixin, generic.UpdateView):
     form_class = TeamCreationForm
 
     def get_success_url(self):
-        return reverse_lazy("team_manager:team-detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy(
+            "team_manager:team-detail",
+            kwargs={"pk": self.object.pk}
+        )
 
 
 class TeamDeleteView(LoginRequiredMixin, generic.DeleteView):

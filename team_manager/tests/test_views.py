@@ -88,7 +88,10 @@ class PublicWorkerTest(TestCase):
         response = self.client.get(url)
 
         self.assertNotEqual(response.status_code, 200)
-        self.assertRedirects(response, "/accounts/login/?next=/worker/1/detail/")
+        self.assertRedirects(
+            response,
+            "/accounts/login/?next=/worker/1/detail/"
+        )
 
     def test_worker_create_page_login_required(self):
         url = reverse("team_manager:worker-create")
@@ -103,10 +106,14 @@ class PrivateWorkerTest(TestCase):
     def setUp(self) -> None:
         self.client = Client()
 
-        self.position = Position.objects.create(name="position")
+        self.position = Position.objects.create(
+            name="position"
+        )
 
         self.user = get_user_model().objects.create_user(
-            username="test_username", password="test_1234", position=self.position
+            username="test_username",
+            password="test_1234",
+            position=self.position
         )
         self.client.force_login(self.user)
 
@@ -184,12 +191,20 @@ class PrivateWorkerTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        self.assertContains(response, reverse("team_manager:worker-update", args=[self.user.id]))
-        self.assertContains(response, reverse("team_manager:worker-delete", args=[self.user.id]))
+        self.assertContains(response, reverse(
+            "team_manager:worker-update",
+            args=[self.user.id])
+                            )
+        self.assertContains(response, reverse(
+            "team_manager:worker-delete",
+            args=[self.user.id])
+                            )
 
-    def test_view_other_workers_detail_page_with_no_update_delete_actions(self):
+    def test_other_workers_detail_page_with_no_update_delete_actions(self):
         other_worker = get_user_model().objects.create_user(
-            username="other", password="other123", position=self.position
+            username="other",
+            password="other123",
+            position=self.position
         )
         url = reverse("team_manager:worker-detail", args=[other_worker.id])
 
@@ -197,8 +212,14 @@ class PrivateWorkerTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        self.assertNotContains(response, reverse("team_manager:worker-update", args=[other_worker.id]))
-        self.assertNotContains(response, reverse("team_manager:worker-delete", args=[other_worker.id]))
+        self.assertNotContains(response, reverse(
+            "team_manager:worker-update",
+            args=[other_worker.id])
+                               )
+        self.assertNotContains(response, reverse(
+            "team_manager:worker-delete",
+            args=[other_worker.id])
+                               )
 
     def test_create_worker(self):
         position = Position.objects.create(name="UniquePosition")
@@ -212,14 +233,19 @@ class PrivateWorkerTest(TestCase):
             "last_name": "TestLastName",
         }
 
-        response = self.client.post(CREATE_WORKER, data=form_data)
+        response = self.client.post(
+            CREATE_WORKER,
+            data=form_data
+        )
         self.assertRedirects(
             response,
             reverse("team_manager:worker-list"),
             target_status_code=200,
             status_code=302
         )
-        self.assertTrue(get_user_model().objects.last().username == form_data["username"])
+        self.assertTrue(
+            get_user_model().objects.last().username == form_data["username"]
+        )
 
 
 class PublicTeamTest(TestCase):
@@ -265,7 +291,9 @@ class PrivateTeamTest(TestCase):
         self.position = Position.objects.create(name="position")
 
         self.user = get_user_model().objects.create_user(
-            username="test_username", password="test_1234", position=self.position
+            username="test_username",
+            password="test_1234",
+            position=self.position
         )
         self.client.force_login(self.user)
 
@@ -361,8 +389,14 @@ class PrivateTeamTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        self.assertContains(response, reverse("team_manager:team-update", args=[self.team.id]))
-        self.assertContains(response, reverse("team_manager:team-delete", args=[self.team.id]))
+        self.assertContains(response, reverse(
+            "team_manager:team-update",
+            args=[self.team.id])
+                            )
+        self.assertContains(response, reverse(
+            "team_manager:team-delete",
+            args=[self.team.id])
+                            )
 
     def test_view_other_team_page_with_no_update_delete_actions(self):
         new_user = get_user_model().objects.create(
@@ -380,5 +414,11 @@ class PrivateTeamTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        self.assertNotContains(response, reverse("team_manager:team-update", args=[self.team.id]))
-        self.assertNotContains(response, reverse("team_manager:team-delete", args=[self.team.id]))
+        self.assertNotContains(
+            response,
+            reverse("team_manager:team-update", args=[self.team.id])
+        )
+        self.assertNotContains(
+            response,
+            reverse("team_manager:team-delete", args=[self.team.id])
+        )

@@ -52,7 +52,14 @@ class WorkerFormTest(TestCase):
     def test_creation_form_fields(self):
         create_form = WorkerCreationForm()
 
-        expected_fields = ["username", "position", "first_name", "last_name", "password1", "password2"]
+        expected_fields = [
+            "username",
+            "position",
+            "first_name",
+            "last_name",
+            "password1",
+            "password2"
+        ]
 
         self.assertEqual(list(create_form.fields.keys()), expected_fields)
 
@@ -96,7 +103,13 @@ class TeamFormTest(TestCase):
     def test_creation_form_fields(self):
         create_form = TeamCreationForm()
 
-        expected_fields = ["name", "description", "members", "owner", "projects"]
+        expected_fields = [
+            "name",
+            "description",
+            "members",
+            "owner",
+            "projects"
+        ]
 
         self.assertEqual(list(create_form.fields.keys()), expected_fields)
 

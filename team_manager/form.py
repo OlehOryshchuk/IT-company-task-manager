@@ -84,4 +84,3 @@ class TeamJoinLeaveForm(forms.ModelForm):
         widgets = {
             "members": forms.HiddenInput()
         }
-
