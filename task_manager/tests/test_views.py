@@ -24,7 +24,10 @@ class PublicTaskTypeTest(TestCase):
         response = self.client.get(TASK_TYPE_CREATE)
 
         self.assertNotEqual(response.status_code, 200)
-        self.assertRedirects(response, "/accounts/login/?next=/task/task_type/create/")
+        self.assertRedirects(
+            response,
+            "/accounts/login/?next=/task/task_type/create/"
+        )
 
 
 class PrivateTaskType(TestCase):
@@ -36,7 +39,10 @@ class PrivateTaskType(TestCase):
 
     def test_view_create_task_type_page(self):
 
-        post_response = self.client.post(TASK_TYPE_CREATE, data={"name": "Bug"})
+        post_response = self.client.post(
+            TASK_TYPE_CREATE,
+            data={"name": "Bug"}
+        )
         get_response = self.client.get(TASK_TYPE_CREATE)
 
         self.assertRedirects(
@@ -46,7 +52,10 @@ class PrivateTaskType(TestCase):
             status_code=302
         )
         self.assertTrue(TaskType.objects.last().name == "Bug")
-        self.assertTemplateUsed(get_response, "task_manager/task_type_form.html")
+        self.assertTemplateUsed(
+            get_response,
+            "task_manager/task_type_form.html"
+        )
 
 
 class PublicTaskViewTest(TestCase):
@@ -63,19 +72,28 @@ class PublicTaskViewTest(TestCase):
         response = self.client.get(TASK_FILTER)
 
         self.assertNotEqual(response.status_code, 200)
-        self.assertRedirects(response, "/accounts/login/?next=/task/task/filter/")
+        self.assertRedirects(
+            response,
+            "/accounts/login/?next=/task/task/filter/"
+        )
 
     def test_task_list_page_is_login_required(self):
         response = self.client.get(TASK_LIST)
 
         self.assertNotEqual(response.status_code, 200)
-        self.assertRedirects(response, "/accounts/login/?next=/task/tasks/")
+        self.assertRedirects(
+            response,
+            "/accounts/login/?next=/task/tasks/"
+        )
 
     def test_task_create_page_is_login_required(self):
         response = self.client.get(TASK_CREATE)
 
         self.assertNotEqual(response.status_code, 200)
-        self.assertRedirects(response, "/accounts/login/?next=/task/task/create/")
+        self.assertRedirects(
+            response,
+            "/accounts/login/?next=/task/task/create/"
+        )
 
     def test_task_update_page_is_login_required(self):
         url = reverse("task_manager:task-update", args=[self.task.id])
@@ -127,17 +145,20 @@ class PrivateTaskViewTest(TestCase):
             list(response.context["task_list"]),
             list(tasks)
         )
-        self.assertTemplateUsed(response, "task_manager/task_list.html")
+        self.assertTemplateUsed(
+            response,
+            "task_manager/task_list.html"
+        )
 
     def test_receive_test_by_name(self):
-        test_1 = Task.objects.create(
-                name=f"test_1",
+        Task.objects.create(
+                name="test_1",
                 deadline=datetime.today().date(),
                 task_type=self.task_type,
                 owner=self.user,
-            )
+        )
         searched_test = Task.objects.create(
-                name=f"Searched",
+                name="Searched",
                 deadline=datetime.today().date(),
                 task_type=TaskType.objects.create(name="searched"),
                 owner=self.user,
@@ -155,20 +176,23 @@ class PrivateTaskViewTest(TestCase):
         )
 
     def test_receive_test_by_task_type(self):
-        test_1 = Task.objects.create(
-                name=f"test_1",
+        Task.objects.create(
+                name="test_1",
                 deadline=datetime.today().date(),
                 task_type=self.task_type,
                 owner=self.user,
-            )
+        )
         searched_test = Task.objects.create(
-                name=f"Searched",
+                name="Searched",
                 deadline=datetime.today().date(),
                 task_type=TaskType.objects.create(name="searched"),
                 owner=self.user,
             )
 
-        response = self.client.get(TASK_LIST, {"task_type": searched_test.task_type.id})
+        response = self.client.get(
+            TASK_LIST,
+            {"task_type": searched_test.task_type.id}
+        )
 
         self.assertEqual(response.status_code, 200)
         task_list = response.context["task_list"]
@@ -184,7 +208,7 @@ class PrivateTaskViewTest(TestCase):
         searched_tag = Tag.objects.create(name="searched_tag")
 
         task_1 = Task.objects.create(
-                name=f"task_1",
+                name="task_1",
                 deadline=datetime.today().date(),
                 task_type=self.task_type,
                 owner=self.user,
@@ -192,7 +216,7 @@ class PrivateTaskViewTest(TestCase):
         task_1.tags.add(tag_1)
 
         searched_test = Task.objects.create(
-                name=f"Searched",
+                name="Searched",
                 deadline=datetime.today().date(),
                 task_type=TaskType.objects.create(name="searched"),
                 owner=self.user,
@@ -211,21 +235,24 @@ class PrivateTaskViewTest(TestCase):
         )
 
     def test_receive_test_by_task_tags_name(self):
-        task_1 = Task.objects.create(
-                name=f"task_1",
+        Task.objects.create(
+                name="task_1",
                 deadline=datetime.today().date(),
                 task_type=self.task_type,
                 owner=self.user,
             )
         searched_test = Task.objects.create(
-                name=f"Searched",
+                name="Searched",
                 deadline=datetime.today().date(),
                 task_type=TaskType.objects.create(name="searched"),
                 owner=self.user,
                 is_completed=True,
             )
 
-        response = self.client.get(TASK_LIST, {"is_completed": searched_test.is_completed})
+        response = self.client.get(
+            TASK_LIST,
+            {"is_completed": searched_test.is_completed}
+        )
 
         self.assertEqual(response.status_code, 200)
         task_list = response.context["task_list"]
@@ -277,7 +304,7 @@ class PublicProjectViewTest(TestCase):
         self.assertNotEqual(response.status_code, 200)
         self.assertRedirects(
             response,
-            f"/accounts/login/?next=/task/project/create/")
+            "/accounts/login/?next=/task/project/create/")
 
     def test_project_update_page_is_login_required(self):
         url = reverse("task_manager:project-update", args=[self.project.id])
@@ -353,7 +380,10 @@ class PrivateProjectViewTest(TestCase):
         )
         searched_project.teams.add(self.team)
 
-        response = self.client.get(PROJECT_LIST, {"name": searched_project.name})
+        response = self.client.get(
+            PROJECT_LIST,
+            {"name": searched_project.name}
+        )
 
         self.assertEqual(response.status_code, 200)
         project_list = response.context["project_list"]
@@ -381,7 +411,10 @@ class PrivateProjectViewTest(TestCase):
         searched_project.teams.add(self.team)
         new_project.teams.add(new_team)
 
-        response = self.client.get(PROJECT_LIST, {"team_projects": self.team.id})
+        response = self.client.get(
+            PROJECT_LIST,
+            {"team_projects": self.team.id}
+        )
 
         self.assertEqual(response.status_code, 200)
         project_list = response.context["project_list"]

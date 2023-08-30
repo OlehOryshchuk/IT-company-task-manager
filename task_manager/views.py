@@ -26,10 +26,13 @@ def valid_deadline(deadline: datetime) -> bool:
 @login_required()
 def task_filter_view(request):
     if request.GET.get("reset"):
-        request.session.pop("task_filter", None)  # Remove the session filter data
+        # Remove the session filter data
+        request.session.pop("task_filter", None)
 
     context = {
-        "task_filter": TaskFilterForm(initial=request.session.get("task_filter", {}))
+        "task_filter": TaskFilterForm(
+            initial=request.session.get("task_filter", {})
+        )
     }
 
     return render(request, "task_manager/task_filter.html", context=context)
@@ -69,7 +72,8 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
 
         name = self.request.GET.get("name", "")
         task_type = self.request.GET.get("task_type", "")
-        tags = self.request.GET.get("tags", "").strip(",")  # remove coma ',' that taggit_auttosugest is adding to tags
+        # remove coma ',' that taggit_auttosugest is adding to tags
+        tags = self.request.GET.get("tags", "").strip(",")
         is_completed = self.request.GET.get("is_completed", "")
 
         self.request.session["task_filter"] = {
@@ -85,7 +89,8 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
             queryset = queryset.filter(task_type=task_type)
 
         if tags:
-            queryset = queryset.filter(tags__name__in=tags.split(","))  # convert string to list of tags
+            # convert string to list of tags
+            queryset = queryset.filter(tags__name__in=tags.split(","))
 
         if is_completed == "True":
             queryset = queryset.filter(is_completed=True)
@@ -106,21 +111,30 @@ class TaskDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["update_form"] = TaskChangeStatusForm(instance=self.object, user=self.request.user)
+        context["update_form"] = TaskChangeStatusForm(
+            instance=self.object,
+            user=self.request.user
+        )
 
         for user_team in self.request.user.teams.all():
             if user_team in self.object.project.teams.all():
                 context["valid_user"] = True
                 break
 
-        context["is_past_deadline"] = valid_deadline(deadline=self.object.deadline)
+        context["is_past_deadline"] = valid_deadline(
+            deadline=self.object.deadline
+        )
 
         return context
 
     def post(self, *args, **kwargs):
         task = self.get_object()
 
-        update_task = TaskChangeStatusForm(user=self.request.user, instance=task, data=self.request.POST)
+        update_task = TaskChangeStatusForm(
+            user=self.request.user,
+            instance=task,
+            data=self.request.POST
+        )
 
         if update_task.is_valid():
             update_task.save()
@@ -133,7 +147,10 @@ class TaskCreateView(LoginRequiredMixin, generic.CreateView):
     form_class = TaskCreateForm
 
     def get_success_url(self):
-        return reverse_lazy("task_manager:task-detail", kwargs={"pk": self.object.id})
+        return reverse_lazy(
+            "task_manager:task-detail",
+            kwargs={"pk": self.object.id}
+        )
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -146,7 +163,10 @@ class TaskUpdateView(LoginRequiredMixin, generic.UpdateView):
     form_class = TaskCreateForm
 
     def get_success_url(self):
-        return reverse_lazy("task_manager:task-detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy(
+            "task_manager:task-detail",
+            kwargs={"pk": self.object.pk}
+        )
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -199,7 +219,9 @@ class ProjectDetailView(LoginRequiredMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context["is_past_deadline"] = valid_deadline(deadline=self.object.deadline)
+        context["is_past_deadline"] = valid_deadline(
+            deadline=self.object.deadline
+        )
 
         return context
 
@@ -209,7 +231,10 @@ class ProjectCreateView(LoginRequiredMixin, generic.CreateView):
     form_class = ProjectCreateForm
 
     def get_success_url(self):
-        return reverse_lazy("task_manager:project-detail", kwargs={"pk": self.object.id})
+        return reverse_lazy(
+            "task_manager:project-detail",
+            kwargs={"pk": self.object.id}
+        )
 
 
 class ProjectUpdateView(LoginRequiredMixin, generic.UpdateView):
@@ -217,7 +242,10 @@ class ProjectUpdateView(LoginRequiredMixin, generic.UpdateView):
     fields = "__all__"
 
     def get_success_url(self):
-        return reverse_lazy("task_manager:project-detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy(
+            "task_manager:project-detail",
+            kwargs={"pk": self.object.pk}
+        )
 
 
 class ProjectDeleteView(LoginRequiredMixin, generic.DeleteView):

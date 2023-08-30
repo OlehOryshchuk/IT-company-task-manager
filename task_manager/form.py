@@ -68,7 +68,9 @@ class TaskCreateForm(forms.ModelForm):
 
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["assignees"].queryset = get_user_model().objects.filter(teams__members=user)
+        self.fields["assignees"].queryset = get_user_model().objects.filter(
+            teams__members=user
+        )
 
     def clean_deadline(self):
         deadline = self.cleaned_data.get("deadline")
@@ -95,7 +97,9 @@ class TaskChangeStatusForm(forms.ModelForm):
 
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["assignees"].queryset = get_user_model().objects.filter(teams__members=user)
+        self.fields["assignees"].queryset = get_user_model().objects.filter(
+            teams__members=user
+        )
 
     def save(self, commit=True):
         task = super().save(commit=False)

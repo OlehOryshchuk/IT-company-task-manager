@@ -39,7 +39,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "deadline",
-                    models.DateField(help_text="Enter the deadline for this task."),
+                    models.DateField(
+                        help_text="Enter the deadline for this task."
+                    ),
                 ),
             ],
             options={
@@ -64,7 +66,9 @@ class Migration(migrations.Migration):
                 ("description", models.TextField(blank=True, null=True)),
                 (
                     "deadline",
-                    models.DateField(help_text="Enter the deadline for this task."),
+                    models.DateField(
+                        help_text="Enter the deadline for this task."
+                    ),
                 ),
                 ("is_completed", models.BooleanField(default=False)),
                 (

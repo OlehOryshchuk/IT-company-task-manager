@@ -9,7 +9,6 @@ from ..form import (
     TaskCreateForm,
     TaskChangeStatusForm,
 
-    ProjectSearchForm,
     ProjectCreateForm,
 
     valid_deadline
@@ -28,9 +27,16 @@ class TaskFormTest(TestCase):
         self.change_status_form = TaskChangeStatusForm(user=self.user)
 
     def test_filter_form_empty_label_and_required_should_be_false(self):
-        self.assertEqual(self.filter_form.fields["task_type"].empty_label, "Filter by task type")
-        self.assertTrue(self.filter_form.fields["task_type"].required is False)
-        self.assertTrue(self.filter_form.fields["is_completed"].required is False)
+        self.assertEqual(
+            self.filter_form.fields["task_type"].empty_label,
+            "Filter by task type"
+        )
+        self.assertTrue(
+            self.filter_form.fields["task_type"].required is False
+        )
+        self.assertTrue(
+            self.filter_form.fields["is_completed"].required is False
+        )
 
     def test_filter_form_field_task_type(self):
         TaskType.objects.create(name="bug")
@@ -78,9 +84,18 @@ class TaskFormTest(TestCase):
         new_team = Team.objects.create(
             name="NewTeam", owner=self.user
         )
-        user2 = get_user_model().objects.create(username="user2", password="user2123")
-        user3 = get_user_model().objects.create(username="user3", password="user3123")
-        user4 = get_user_model().objects.create(username="user4", password="user4123")
+        user2 = get_user_model().objects.create(
+            username="user2",
+            password="user2123"
+        )
+        user3 = get_user_model().objects.create(
+            username="user3",
+            password="user3123"
+        )
+        user4 = get_user_model().objects.create(
+            username="user4",
+            password="user4123"
+        )
 
         new_team.members.add(user2, user3, self.user)
 
@@ -99,7 +114,7 @@ class TaskFormTest(TestCase):
         self.assertTrue(create_form.is_valid())
         create_form.save()
 
-        # user4 not supposed to be in assignees.queryset because he is not in same team
+# user4 not supposed to be in assignees.queryset because he is not in same team
         self.assertEqual(
             list(create_form.fields["assignees"].queryset),
             [self.user, user2, user3]
@@ -109,8 +124,12 @@ class TaskFormTest(TestCase):
     def test_change_status_form_fields_and_their_attributes(self):
         self.assertTrue(self.change_status_form.fields.get('assignees'))
         self.assertTrue(self.change_status_form.fields.get('is_completed'))
-        self.assertTrue(self.change_status_form.fields["assignees"].required is False)
-        self.assertTrue(self.change_status_form.fields["is_completed"].required is False)
+        self.assertTrue(
+            self.change_status_form.fields["assignees"].required is False
+        )
+        self.assertTrue(
+            self.change_status_form.fields["is_completed"].required is False
+        )
 
     def test_change_status_form_field_assignees(self):
         task = Task.objects.create(
@@ -122,9 +141,18 @@ class TaskFormTest(TestCase):
         new_team = Team.objects.create(
             name="NewTeam", owner=self.user
         )
-        user2 = get_user_model().objects.create(username="user2", password="user2123")
-        user3 = get_user_model().objects.create(username="user3", password="user3123")
-        user4 = get_user_model().objects.create(username="user4", password="user4123")
+        user2 = get_user_model().objects.create(
+            username="user2",
+            password="user2123"
+        )
+        user3 = get_user_model().objects.create(
+            username="user3",
+            password="user3123"
+        )
+        user4 = get_user_model().objects.create(
+            username="user4",
+            password="user4123"
+        )
 
         new_team.members.add(user2, user3, self.user)
 
@@ -133,12 +161,16 @@ class TaskFormTest(TestCase):
             "is_completed": True,
         }
 
-        changed_task = TaskChangeStatusForm(instance=task, user=self.user, data=form_data)
+        changed_task = TaskChangeStatusForm(
+            instance=task,
+            user=self.user,
+            data=form_data
+        )
 
         self.assertTrue(changed_task.is_valid())
         changed_task.save()
 
-        # user4 not supposed to be in assignees.queryset because he is not in same team
+# user4 not supposed to be in assignees.queryset because he is not in same team
         self.assertEqual(
             list(changed_task.fields["assignees"].queryset),
             [self.user, user2, user3]
