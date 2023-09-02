@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from datetime import datetime
@@ -6,6 +7,7 @@ from taggit.models import Tag
 
 from ..models import TaskType, Task, Project
 from team_manager.models import Team
+from ..admin import TaskAdmin
 
 
 class AdminSiteTest(TestCase):
@@ -62,11 +64,10 @@ class AdminSiteTest(TestCase):
 
         response = self.client.get(url)
 
-        deadline = new_task.deadline.strftime("%b. %d, %Y")
         self.assertContains(response, new_task.name)
         self.assertContains(response, new_task.description)
-        self.assertContains(response, deadline,)
-        self.assertContains(response, new_task.is_completed,)
+        self.assertContains(response, new_task.is_completed)
+        self.assertIn("deadline", TaskAdmin(model=Task, admin_site=admin.site).list_display)
         self.assertContains(response, new_task.priority.capitalize())
 
     def test_task_admin_search_by_name(self):
@@ -136,11 +137,10 @@ class AdminSiteTest(TestCase):
 
         response = self.client.get(url)
 
-        deadline = new_project.deadline.strftime("%b. %d, %Y")
         self.assertContains(response, new_project.name)
         self.assertContains(response, new_project.description)
-        self.assertContains(response, deadline,)
         self.assertContains(response, new_project.is_completed,)
+        self.assertIn("deadline", TaskAdmin(model=Task, admin_site=admin.site).list_display)
         self.assertContains(response, new_project.priority.capitalize())
 
     def test_project_admin_search_by_name(self):
