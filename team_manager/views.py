@@ -167,6 +167,7 @@ class TeamDetailView(LoginRequiredMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["team_join"] = TeamJoinLeaveForm()
+        context["team_task"] = Task.objects.filter(project__teams=self.object)
 
         return context
 
