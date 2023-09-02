@@ -66,8 +66,6 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
     def get_queryset(self) -> QuerySet:
         queryset = Task.objects.select_related(
             "task_type"
-        ).prefetch_related(
-            "assignees", "tags"
         )
 
         name = self.request.GET.get("name", "")
@@ -104,9 +102,9 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
 class TaskDetailView(LoginRequiredMixin, generic.DetailView):
     model = Task
     queryset = Task.objects.prefetch_related(
-        "assignees", "tags"
+        "assignees__position", "tags"
     ).select_related(
-        "project"
+        "project", "task_type", "owner"
     )
 
     def get_context_data(self, **kwargs):
@@ -195,9 +193,7 @@ class ProjectListView(LoginRequiredMixin, generic.ListView):
         return context
 
     def get_queryset(self) -> QuerySet:
-        queryset = Project.objects.prefetch_related(
-            "teams", "tasks"
-        )
+        queryset = Project.objects.all()
         name = self.request.GET.get("name", "")
         team_projects = self.request.GET.get("team_projects", "")
 
@@ -213,8 +209,8 @@ class ProjectListView(LoginRequiredMixin, generic.ListView):
 class ProjectDetailView(LoginRequiredMixin, generic.DetailView):
     model = Project
     queryset = Project.objects.prefetch_related(
-        "teams", "tags"
-    )
+        "teams", "tags", "tasks"
+    ).select_related("owner")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
