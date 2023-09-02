@@ -1,12 +1,12 @@
-{% extends "base.html" %}
+{% extends "layouts/base.html" %}
 
 {% block title %}
     <title>Logged out</title>
 {% endblock %}
 
 {% block content %}
-
-	<p>Logged out!</p>
-	<a href="{% url 'login'%}">Click here to login again.</a>
-
+	<div class="container mt-8">
+		<h1 class="text-center">Logged out!</h1>
+		<p class="text-center"><a href="{% url 'login'%}">Click here to login again.</a></p>
+	</div>
 {% endblock %}
