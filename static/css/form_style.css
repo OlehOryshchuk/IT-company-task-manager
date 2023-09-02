@@ -1,0 +1,36 @@
+input#id_name {
+    border: 1px solid #d2d6da !important;
+}
+
+input#id_username {
+    border: 1px solid #d2d6da !important;
+}
+
+input#id_first_name {
+    border: 1px solid #d2d6da !important;
+}
+
+input#id_last_name {
+    border: 1px solid #d2d6da !important;
+}
+
+input#id_password1 {
+    border: 1px solid #d2d6da !important;
+}
+
+input#id_password2 {
+    border: 1px solid #d2d6da !important;
+}
+
+textarea#id_description {
+    border: 1px solid #d2d6da !important;
+}
+
+input#id_tags__tagautosuggest {
+    border: 1px solid #d2d6da !important;
+}
+
+select {
+    background-color: white !important;
+}
+
