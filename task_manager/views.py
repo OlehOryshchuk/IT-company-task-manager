@@ -74,11 +74,12 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
         tags = self.request.GET.get("tags", "").strip(",")
         is_completed = self.request.GET.get("is_completed", "")
 
-        self.request.session["task_filter"] = {
-            "task_type": task_type,
-            "tags": tags,
-            "is_completed": is_completed,
-        }
+        if task_type or tags or is_completed:
+            self.request.session["task_filter"] = {
+                "task_type": task_type,
+                "tags": tags,
+                "is_completed": is_completed,
+            }
 
         if name:
             queryset = queryset.filter(name__icontains=name)
