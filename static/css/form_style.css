@@ -34,3 +34,6 @@ select {
     background-color: white !important;
 }
 
+table {
+    border-color: black !important;
+}
