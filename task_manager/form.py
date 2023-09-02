@@ -33,7 +33,7 @@ class TaskSearchForm(forms.Form):
         label="",
         required=False,
         widget=forms.TextInput(attrs={
-            "placeholder": "Search by task name"
+            "placeholder": "Search by task name",
         }
         )
     )
@@ -45,7 +45,7 @@ class ProjectSearchForm(forms.Form):
         label="",
         required=False,
         widget=forms.TextInput(attrs={
-            "placeholder": "Search by project name"
+            "placeholder": "Search by project name",
         }
         )
     )
@@ -64,6 +64,9 @@ class TaskCreateForm(forms.ModelForm):
         widgets = {
             "owner": forms.HiddenInput(),
             "is_completed": forms.HiddenInput(),
+            "deadline": forms.DateInput(attrs={
+                "type": "date",
+                })
         }
 
     def __init__(self, user, *args, **kwargs):
@@ -134,7 +137,9 @@ class ProjectCreateForm(forms.ModelForm):
         widgets = {
             "owner": forms.HiddenInput(),
             "is_completed": forms.HiddenInput(),
-            "deadline": forms.DateInput(attrs={"type": "date"})
+            "deadline": forms.DateInput(attrs={
+                "type": "date",
+            })
         }
 
     def clean_deadline(self):
