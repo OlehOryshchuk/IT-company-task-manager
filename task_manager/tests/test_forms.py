@@ -61,7 +61,7 @@ class TaskFormTest(TestCase):
         form_data = {
             "name": "Test Task",
             "description": "This is a test task",
-            "deadline": "2023-08-31",
+            "deadline": datetime.today().date(),
             "priority": "high",
             "task_type": self.task_type.id,
             "owner": self.user.id,
@@ -69,6 +69,7 @@ class TaskFormTest(TestCase):
         }
 
         form = TaskCreateForm(data=form_data, user=self.user)
+        print(form.errors)
         self.assertTrue(form.is_valid())
 
     def test_create_form_invalid_data(self):
@@ -102,7 +103,7 @@ class TaskFormTest(TestCase):
         form_data = {
             "name": "Test Task",
             "description": "This is a test task",
-            "deadline": "2023-08-31",
+            "deadline": datetime.today().date(),
             "priority": "high",
             "task_type": self.task_type.id,
             "owner": self.user.id,
