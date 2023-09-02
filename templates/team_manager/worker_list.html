@@ -1,51 +1,74 @@
-{% extends "base.html" %}
+{% extends "layouts/base.html" %}
 {% load crispy_forms_filters %}
 
 {% block title %}
     <title>Worker List</title>
 {% endblock %}
 
+{% block stylesheets %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/form_style.css' %}">
+{% endblock %}
+
 {% block content %}
+  <div class="container mt-8">
+      <div class="row">
 
-  <h1>
-    Workers
-    <a href="{% url 'team_manager:worker-create' %}" class="btn btn-primary">Create</a>
-  </h1>
+          <div>
+              <div class="row">
+                  <div class="col-sm-4">
+                      <h1 class="title">Workers
+                        <a
+                          href="{% url 'team_manager:worker-create' %}"
+                          class="btn btn-primary">Create</a>
+                      </h1>
+                  </div>
+                  <div class="col-auto col-xs-12">
+                      <div class="btn_group">
+                        <form action="" method="get" class="form-inline">
 
-  <form action="" method="get" class="form-inline">
+                          {% csrf_token %}
+                          {{ search_form|crispy }}
+                          <input type="submit" value="Submit"  class="btn btn-secondary">
+                        </form>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div>
+              <table class="table">
+                  <thead>
+                      <tr>
+                          <tr>
+                            <th>Id</th>
+                            <th>Username</th>
+                            <th>First name</th>
+                            <th>Last name</th>
+                            <th>Position</th>
+                          </tr>
+                      </tr>
+                  </thead>
+                  <tbody>
+                  {% if worker_list %}
+                    {% for worker in worker_list %}
+                      <tr>
+                        <td>{{ worker.id }}</td>
+                        <td><a href="{% url 'team_manager:worker-detail' pk=worker.id %}">
+                            {{ worker.username }} {% if user == worker %} (Me) {% endif %}
+                            </a></td>
+                        <td>{{ worker.first_name }}</td>
+                        <td>{{ worker.last_name }}</td>
+                        <td>{{ worker.position }}</td>
+                      </tr>
+                    {% endfor %}
 
-    {% csrf_token %}
-    {{ search_form|crispy }}
-    <input type="submit" value="Submit"  class="btn btn-secondary">
+                  {% else %}
+                    <h4>There are no tasks in service</h4>
+                  {% endif %}
 
-  </form>
-  <br>
-  {% if worker_list %}
-    <table class="table">
-      <tr>
-        <th>Id</th>
-        <th>Username</th>
-        <th>First name</th>
-        <th>Last name</th>
-        <th>Position</th>
-      </tr>
-
-      {% for worker in worker_list %}
-        <tr>
-          <td>{{ worker.id }}</td>
-          <td><a href="{% url 'team_manager:worker-detail' pk=worker.id %}">
-              {{ worker.username }} {% if user == worker %} (Me) {% endif %}
-              </a></td>
-          <td>{{ worker.first_name }}</td>
-          <td>{{ worker.last_name }}</td>
-          <td>{{ worker.position }}</td>
-        </tr>
-
-      {% endfor %}
-
-    </table>
-  {% else %}
-    <p>There are no workers in the service</p>
-  {% endif %}
-
+                  </tbody>
+              </table>
+          </div>
+      </div>
+  </div>
 {% endblock %}

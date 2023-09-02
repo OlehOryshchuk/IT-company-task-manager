@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "layouts/base.html" %}
 {% load crispy_forms_filters %}
 
 {% block title %}
@@ -6,84 +6,94 @@
 {% endblock %}
 
 {% block content %}
+  <div class="container mt-8">
+    <h1>
+      Team: {{ team.name }}
+      {% if user == team.owner %}
+        <a href="{% url 'team_manager:team-update' pk=team.id %}" class="btn btn-primary"> Update</a>
+        <a href="{% url 'team_manager:team-delete' pk=team.id %}" class="btn btn-danger"> Delete</a>
+      {% endif %}
+    </h1>
+    <p>Owner: {{ team.owner.username }}</p>
 
-  <h1>
-    Team: {{ team.name }}
-	  {% if user == team.owner %}
-	    <a href="{% url 'team_manager:team-update' pk=team.id %}" class="btn btn-primary"> Update</a>
-	    <a href="{% url 'team_manager:team-delete' pk=team.id %}" class="btn btn-danger"> Delete</a>
-	  {% endif %}
-  </h1>
-  <p>Owner: {{ team.owner.username }}</p>
+    {% if user not in team.members.all %}
+      <form action="" method="post">
+        {% csrf_token %}
+        {{ team_join|crispy }}
+        <input type="submit" value="Join" class="btn btn-primary">
+        <input type="hidden" name="join" value="{{ user.id }}">
+      </form>
+    {% else %}
+      <form action="" method="post">
+        {% csrf_token %}
+        {{ team_join|crispy }}
+        <input type="submit" value="Leave" class="btn btn-danger">
+        <input type="hidden" name="leave" value="{{ user.id }}">
+      </form>
+    {% endif %}
+    <p><strong>Description: </strong>{{ team.description }}</p>
+    <hr>
+    <a
+      href="{% url 'team_manager:worker-list'%}?team_members={{ team.id }}"
+      class="btn btn-secondary"
+    >Members</a>
 
-  {% if user not in team.members.all %}
-    <form action="" method="post">
-      {% csrf_token %}
-      {{ team_join|crispy }}
-      <input type="submit" value="Join" class="btn btn-primary">
-      <input type="hidden" name="join" value="{{ user.id }}">
-    </form>
-  {% else %}
-    <form action="" method="post">
-      {% csrf_token %}
-      {{ team_join|crispy }}
-      <input type="submit" value="Leave" class="btn btn-danger">
-      <input type="hidden" name="leave" value="{{ user.id }}">
-    </form>
-  {% endif %}
-  <hr>
+    <a
+      href="{% url 'task_manager:project-list'%}?team_projects={{ team.id }}"
+      class="btn btn-secondary"
+    >Projects</a>
 
-  <p><strong>Description: </strong>{{ team.description }}</p>
+    <div class="row">
+        <div class="col-6">
 
-	<hr>
+          <h3>Completed tasks</h3>
+          {% for task in team_task %}
+            {% if task.is_completed %}
+              <div class="col-xl-7 col-sm-6 col-12">
+                <div class="card">
+                  <div class="card-content">
+                    <div class="p-3">
+                      <div class="media d-flex">
+                        <div class="media-body">
+                          <h5 class="card-title link"><a href="{% url 'task_manager:task-detail' pk=task.id%}">{{ task.name }}</a></h5>
+                          <p>From: <a href="{% url 'team_manager:worker-detail' pk=task.owner.id%}">{{ task.owner }}</a></p>
+                          <p class="card-text">{{ task.description }}</p>
+                          <p>{{ task.deadline }}</p>
+                       </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <hr>
+            {% endif %}
+          {% endfor %}
+        </div>
 
-  <a
-    href="{% url 'team_manager:worker-list'%}?team_members={{ team.id }}"
-    class="btn btn-secondary"
-  >Members</a>
-
-
-  <a
-    href="{% url 'task_manager:project-list'%}?team_projects={{ team.id }}"
-    class="btn btn-secondary"
-  >Projects</a>
-
-  <div class="row">
-      <div class="col-6">
-        <h4>Team completed this tasks</h4>
-
-        {% for task in team.projects.tasks.all %}
-          {% if task.is_completed %}
-            <div>
-
-              <h5><a href="{% url 'task_manager:task-detail' pk=task.id%}">{{ task.name }}</a></h5>
-	            <p>From: {{ task.owner }}</p>
-              <p>{{ task.description }}</p>
-              <p>{{ task.deadline }}</p>
-
-            </div>
-            <hr>
-          {% endif %}
-        {% endfor %}
-      </div>
-
-      <div class="col-6">
-        <h4>Team must complete this tasks</h4>
-
-        {% for task in team.projects.tasks.all %}
-          {% if task.is_completed == False %}
-            <div>
-
-              <h5><a href="{% url 'task_manager:task-detail' pk=task.id%}">{{ task.name }}</a></h5>
-	            <p>From: {{ task.owner }}</p>
-              <p>{{ task.description }}</p>
-              <p>{{ task.deadline }}</p>
-
-            </div>
-            <hr>
-          {% endif %}
-        {% endfor %}
-      </div>
+        <div class="col-6">
+          <h3>Not completed tasks</h3>
+          {% for task in team_task %}
+            {% if not task.is_completed %}
+              <div class="col-xl-7 col-sm-6 col-12">
+                <div class="card">
+                  <div class="card-content">
+                    <div class="p-3">
+                      <div class="media d-flex">
+                        <div class="media-body">
+                          <h5 class="card-title link"><a href="{% url 'task_manager:task-detail' pk=task.id%}">{{ task.name }}</a></h5>
+                          <p>From: <a href="{% url 'team_manager:worker-detail' pk=task.owner.id%}">{{ task.owner }}</a></p>
+                          <p class="card-text">{{ task.description }}</p>
+                          <p>{{ task.deadline }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <hr>
+            {% endif %}
+          {% endfor %}
+        </div>
     </div>
-
+  </div>
 {% endblock %}

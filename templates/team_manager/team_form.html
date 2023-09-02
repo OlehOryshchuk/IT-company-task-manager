@@ -1,22 +1,27 @@
-{% extends "base.html" %}
-{% load crispy_forms_filters %}
+{% extends "layouts/base.html" %}
+{% load crispy_forms_tags %}
 
 {% block title %}
   <title>{{ object|yesno:"Update,Create" }}</title>
 {% endblock %}
 
+{% block stylesheets %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/form_style.css' %}">
+{% endblock %}
+
 {% block content %}
+  <div class="container mt-8">
+    <h1>{{ object|yesno:"Update,Create" }} team</h1>
 
-  <h1>{{ object|yesno:"Update,Create" }} team</h1>
+    <form action="" method="post" novalidate>
 
-  <form action="" method="post" novalidate>
+      {% csrf_token %}
+      {{ form|crispy }}
 
-    {% csrf_token %}
-    {{ form|crispy }}
+      <input type="submit" value="Submit" class="btn btn-primary">
+      <input type="hidden" name="owner" value="{{ user.id }}">
 
-    <input type="submit" value="Submit" class="btn btn-primary">
-    <input type="hidden" name="owner" value="{{ user.id }}">
-    
-  </form>
-
+    </form>
+  </div>
 {% endblock %}

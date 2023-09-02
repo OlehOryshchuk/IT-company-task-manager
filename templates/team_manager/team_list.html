@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "layouts/base.html" %}
 {% load crispy_forms_filters %}
 
 
@@ -6,44 +6,61 @@
     <title>Teams</title>
 {% endblock %}
 
+{% block stylesheets %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/form_style.css' %}">
+{% endblock %}
+
 {% block content %}
+  <div class="container mt-8">
+      <div class="row">
+          <div>
+              <div class="row">
+                  <div class="col-sm-4">
+                      <h1 class="title">Teams
+                        <a href="{% url 'team_manager:team-create' %}"
+                           class="btn btn-primary">Create</a>
+                      </h1>
+                  </div>
+                  <div class="col-auto col-xs-12">
+                      <div class="btn_group">
+                        <form action="" method="get" class="form-inline">
+                          {% csrf_token %}
+                          {{ search_form|crispy }}
+                          <input type="submit" value="Submit"  class="btn btn-secondary">
+                        </form>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div>
+              <table class="table">
+                  <thead>
+                      <tr>
+                          <th>#</th>
+                          <th>Name</th>
+                          <th>Number of tasks</th>
+                          <th>Number of workers</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                  {% if team_list %}
+                    {% for team in team_list %}
+                     <tr>
+                      <td>{{ team.id }}</td>
+                      <td><a href="{% url 'team_manager:team-detail' pk=team.id %}">{{ team.name }}</a></td>
+                      <td>{{ team.projects.tasks.count }}</td>
+                      <td>{{ team.members.count }}</td>
 
-  <h1>Teams
-    <a href="{% url 'team_manager:team-create' %}" class="btn btn-primary">Create</a>
-  </h1>
+                    </tr>
+                    {% endfor %}
+                  {% else %}
+                    <h4>There are no teams in service</h4>
+                  {% endif %}
 
-  <form action="" method="get" class="form-inline">
-
-    {% csrf_token %}
-    {{ search_form|crispy }}
-    <input type="submit" value="Submit" class="btn btn-secondary">
-
-  </form>
-
-    {% if team_list %}
-
-    <table class="table">
-
-      <tr>
-        <th>Id</th>
-        <th>Name</th>
-        <th>Numbers of workers</th>
-      </tr>
-      {% for team in team_list %}
-
-      <tr>
-        <td>{{ team.id }}</td>
-        <td><a href="{% url 'team_manager:team-detail' pk=team.id %}">{{ team.name }}</a></td>
-        <td>{{ team.members.count }}</td>
-
-      </tr>
-
-      {% endfor %}
-
-    {% else %}
-      <p>There are no teams in server</p>
-    {% endif %}
-
-  </table>
-
+                  </tbody>
+              </table>
+          </div>
+      </div>
+  </div>
 {% endblock %}
