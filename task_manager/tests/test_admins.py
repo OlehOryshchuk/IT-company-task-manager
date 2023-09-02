@@ -67,7 +67,10 @@ class AdminSiteTest(TestCase):
         self.assertContains(response, new_task.name)
         self.assertContains(response, new_task.description)
         self.assertContains(response, new_task.is_completed)
-        self.assertIn("deadline", TaskAdmin(model=Task, admin_site=admin.site).list_display)
+        self.assertIn(
+            "deadline",
+            TaskAdmin(model=Task, admin_site=admin.site).list_display
+        )
         self.assertContains(response, new_task.priority.capitalize())
 
     def test_task_admin_search_by_name(self):
@@ -140,7 +143,10 @@ class AdminSiteTest(TestCase):
         self.assertContains(response, new_project.name)
         self.assertContains(response, new_project.description)
         self.assertContains(response, new_project.is_completed,)
-        self.assertIn("deadline", TaskAdmin(model=Task, admin_site=admin.site).list_display)
+        self.assertIn(
+            "deadline",
+            TaskAdmin(model=Task, admin_site=admin.site).list_display
+        )
         self.assertContains(response, new_project.priority.capitalize())
 
     def test_project_admin_search_by_name(self):
