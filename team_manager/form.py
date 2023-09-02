@@ -13,7 +13,7 @@ class PositionSearchForm(forms.Form):
         required=False,
         widget=forms.TextInput(
             attrs={
-                "placeholder": "Search by position name"
+                "placeholder": "Search by position name",
             }
         )
     )
@@ -27,7 +27,6 @@ class WorkerSearchForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 "placeholder": "Search by worker username",
-                "size": 30,
             }
         )
     )
@@ -41,7 +40,6 @@ class TeamSearchForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 "placeholder": "Search by project name",
-                "size": 30,
             }
         )
     )
