@@ -58,8 +58,7 @@ class Task(models.Model):
         "Project",
         on_delete=models.CASCADE,
         related_name="tasks",
-        blank=True,
-        null=True,
+        null=True
     )
 
     class Meta:
