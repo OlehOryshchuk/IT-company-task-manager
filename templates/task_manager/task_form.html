@@ -21,6 +21,9 @@
       {{ form|crispy }}
 
       <input type="submit" value="Submit" class="btn btn-primary">
+        {% if not object %}
+          <input type="hidden" name="owner" value="{{ user.id }}">
+        {% endif %}
 
     </form>
   </div>
