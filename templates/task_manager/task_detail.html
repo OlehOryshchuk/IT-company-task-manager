@@ -54,7 +54,7 @@
       <ul  class="sidebar-nav list-group">
         <h4>Join one of team to implement that task</h4>
         {% for team in task.project.teams.all %}
-          <li class="list-group-item"><a href="{% url 'team_manager:team-detail' pk=team.id %}">{team.name}</a></li>
+          <li class="list-group-item"><a href="{% url 'team_manager:team-detail' pk=team.id %}">{{ team.name }}</a></li>
         {% endfor %}
       </ul>
     {% endif %}
