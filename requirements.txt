@@ -1,4 +1,6 @@
 python-dotenv==1.0.0
+psycopg2==2.9.7
+dj-database-url==2.1.0
 asgiref==3.7.2
 black==23.7.0
 blinker==1.6.2
