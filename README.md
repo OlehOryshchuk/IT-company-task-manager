@@ -43,8 +43,15 @@ python manage.py runserver
 ## DB-structure diagram:
 ![DB-structure diagram](/static/assets/img/db-diagram.png)
 [DB-structure diagram](/static/assets/img/db-diagram.png)
+## Demo
+Superuser (or create another one by yourself):
+- Name: 'admin'
+- Password: 'P@ssw023'
 
+You need to create your `.env` file and register your variables in it. After that, everything will work. For an example, see the file `.env_sample`
 
+Home page:
+![home page](static/assets/img/home_pag.png)
 ## Links
 
 - Repository: https://github.com/OlehOryshchuk/IT-company-task-manager
