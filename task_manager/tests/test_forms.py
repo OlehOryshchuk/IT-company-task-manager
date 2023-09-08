@@ -58,12 +58,19 @@ class TaskFormTest(TestCase):
         self.assertIn('placeholder="Search by task name"', rendered_html)
 
     def test_create_form_valid_data(self):
+        new_project = Project.objects.create(
+            name="TestProject",
+            deadline=datetime.today().date(),
+            owner=self.user,
+        )
+
         form_data = {
             "name": "Test Task",
             "description": "This is a test task",
             "deadline": datetime.today().date(),
             "priority": "high",
             "task_type": self.task_type.id,
+            "project": new_project.id,
             "owner": self.user.id,
             "is_completed": True,
         }
@@ -98,6 +105,12 @@ class TaskFormTest(TestCase):
             password="user4123"
         )
 
+        new_project = Project.objects.create(
+            name="TestProject",
+            deadline=datetime.today().date(),
+            owner=self.user,
+        )
+        new_project.teams.add(new_team)
         new_team.members.add(user2, user3, self.user)
 
         form_data = {
@@ -106,12 +119,13 @@ class TaskFormTest(TestCase):
             "deadline": datetime.today().date(),
             "priority": "high",
             "task_type": self.task_type.id,
+            "project": new_project.id,
             "owner": self.user.id,
             "is_completed": True,
         }
 
         create_form = TaskCreateForm(user=self.user, data=form_data)
-
+        print(create_form.errors)
         self.assertTrue(create_form.is_valid())
         create_form.save()
 
