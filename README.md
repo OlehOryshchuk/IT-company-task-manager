@@ -8,7 +8,7 @@ A quick introduction of the minimal setup you need to get
 
 ```shell
 git clone https://github.com/OlehOryshchuk/IT-company-task-manager.git
-cd it_company_task_manager
+cd IT_company_task_manager
 ```
 If you are using PyCharm - it may propose you to automatically create venv for your project and install requirements in it, but if not:
 
@@ -44,11 +44,12 @@ python manage.py runserver
 ![DB-structure diagram](/static/assets/img/db-diagram.png)
 [DB-structure diagram](/static/assets/img/db-diagram.png)
 ## Demo
-Superuser (or create another one by yourself):
-- Name: 'admin'
-- Password: 'P@ssw023'
 
-You need to create your `.env` file and register your variables in it. After that, everything will work. For an example, see the file `.env_sample`
+Superuser (or create another one by yourself: `python manage.py createsuperuser`):
+- Name: Admin
+- Password: P@ssw023!
+
+You need to create your `.env` file and register your variables in it. After that, everything will work. For an example, see the file `.env_example`
 
 Home page:
 ![home page](static/assets/img/home_pag.png)
