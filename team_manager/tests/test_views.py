@@ -168,7 +168,7 @@ class PrivateWorkerTest(TestCase):
         )
         searched_worker.members.add(self.user.id)
         Team.objects.create(
-            name="TestTeam2",
+            name="Team2",
             owner=self.user
         )
 

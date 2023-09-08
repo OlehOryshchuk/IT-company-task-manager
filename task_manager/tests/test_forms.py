@@ -204,16 +204,21 @@ class ProjectFormTest(TestCase):
         )
 
     def test_create_form_valid_submission(self):
+        new_team = Team.objects.create(
+            name="TeamData",
+            owner=self.user
+        )
         form_data = {
             "name": "Project",
             "description": "Project for testing",
             "deadline": datetime.today().date(),
             "priority": "high",
+            "teams": [new_team.id],
             "owner": self.user
         }
 
         create_form = ProjectCreateForm(data=form_data)
-
+        print(create_form.errors)
         self.assertTrue(create_form.is_valid())
         create_form.save()
 
