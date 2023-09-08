@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 import os
+import sys
 import dotenv
 import dj_database_url
 from pathlib import Path
@@ -30,6 +31,9 @@ SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DJANGO_DEBUG", "") != "False"
+
+# Set TESTING flag to True during tests
+TESTING = "test" in sys.argv
 
 ALLOWED_HOSTS = [
     "127.0.0.1"
@@ -113,9 +117,11 @@ DATABASES = {
 }
 
 # dj-database-url
+# set posgres db as default if we are not running test
 
-db_from_env = dj_database_url.config(conn_max_age=600)  # DATABASE_URL
-DATABASES["default"].update(db_from_env)
+if not TESTING:
+    db_from_env = dj_database_url.config(conn_max_age=600)  # DATABASE_URL
+    DATABASES["default"].update(db_from_env)
 
 
 # Password validation
