@@ -1,2 +1,2 @@
 [flake8]
-exclude = */migrations/*
+exclude = */migrations/*, IT_company_task_manager\settings.py
