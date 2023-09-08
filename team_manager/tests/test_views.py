@@ -90,7 +90,7 @@ class PublicWorkerTest(TestCase):
         self.assertNotEqual(response.status_code, 200)
         self.assertRedirects(
             response,
-            "/accounts/login/?next=/worker/1/detail/"
+            f"/accounts/login/?next=/worker/{self.user.id}/detail/"
         )
 
     def test_worker_create_page_login_required(self):
@@ -168,7 +168,7 @@ class PrivateWorkerTest(TestCase):
         )
         searched_worker.members.add(self.user.id)
         Team.objects.create(
-            name="Team2",
+            name="TestTeam2",
             owner=self.user
         )
 
@@ -273,7 +273,7 @@ class PublicTeamTest(TestCase):
         response = self.client.get(url)
 
         self.assertNotEqual(response.status_code, 200)
-        self.assertRedirects(response, "/accounts/login/?next=/team/1/detail/")
+        self.assertRedirects(response, f"/accounts/login/?next=/team/{new_team.id}/detail/")
 
     def test_team_create_page_login_required(self):
         url = reverse("team_manager:team-create")
