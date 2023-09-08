@@ -342,7 +342,7 @@ fabric.properties
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 
 .idea/
-it_company_task_manager/.idea/
+IT_company_task_manager/.idea/
 ### Python Patch ###
 # Poetry local configuration file - https://python-poetry.org/docs/configuration/#local-configuration
 poetry.toml
