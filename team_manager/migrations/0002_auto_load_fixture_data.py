@@ -3,7 +3,7 @@
 from django.core.management import call_command
 from django.db import migrations
 
-from IT_company_task_manager.settings import TESTING
+from it_company_task_manager.settings import TESTING
 
 
 def load_data(apps, schema_editor):

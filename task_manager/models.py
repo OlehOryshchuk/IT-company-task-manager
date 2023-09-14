@@ -1,5 +1,5 @@
 from django.db import models
-from IT_company_task_manager.settings import AUTH_USER_MODEL
+from it_company_task_manager.settings import AUTH_USER_MODEL
 from taggit_autosuggest.managers import TaggableManager
 
 from team_manager.models import Team

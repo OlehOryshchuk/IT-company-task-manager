@@ -8,7 +8,7 @@ A quick introduction of the minimal setup you need to get
 
 ```shell
 git clone https://github.com/OlehOryshchuk/IT-company-task-manager.git
-cd IT_company_task_manager
+cd it_company_task_manager
 ```
 If you are using PyCharm - it may propose you to automatically create venv for your project and install requirements in it, but if not:
 
