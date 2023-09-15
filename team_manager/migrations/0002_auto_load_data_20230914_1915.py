@@ -5,7 +5,6 @@ from it_company_task_manager.settings import TESTING
 
 
 def load_data(apps, schema_editor):
-    print("load")
     call_command("loaddata", "project_data.json")
 
 
@@ -19,5 +18,4 @@ class Migration(migrations.Migration):
     ]
     if not TESTING:
         # do not load fixture if we are running test
-        print("!!!")
         operations = [migrations.RunPython(load_data, reverse_load_data)]
