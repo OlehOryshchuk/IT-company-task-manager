@@ -119,10 +119,10 @@ DATABASES = {
 # dj-database-url
 # set posgres db as default if we are not running test
 
-if not TESTING:
-    db_from_env = dj_database_url.config(conn_max_age=600)  # DATABASE_URL
-    DATABASES["default"].update(db_from_env)
-
+# if not TESTING:
+#     db_from_env = dj_database_url.config(conn_max_age=600)  # DATABASE_URL
+#     DATABASES["default"].update(db_from_env)
+#
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
