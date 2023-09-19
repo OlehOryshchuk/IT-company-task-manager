@@ -18,7 +18,6 @@ from .form import (
 )
 
 
-@login_required
 def index(request):
     num_completed_projects = Project.objects.filter(is_completed=True).count()
     num_completed_tasks = Task.objects.filter(is_completed=True).count()
