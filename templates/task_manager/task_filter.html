@@ -1,0 +1,27 @@
+{% extends 'layouts/base.html' %}
+{% load crispy_forms_filters %}
+
+{% block title %}
+	Filter Task
+{% endblock %}
+
+{% block stylesheets %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/form_style.css' %}">
+{% endblock %}
+
+{% block content %}
+	<div class="container mt-8">
+		<h1>Filter task</h1>
+		<hr>
+		<form action="{% url 'task_manager:task-list' %}" method="get">
+			{{ task_filter.media }}
+			{{ task_filter|crispy }}
+
+			<input type="submit" value="Submit" class="btn btn-primary">
+			<a href="{% url 'task_manager:task-filter' %}?reset=True" class="btn btn-secondary">Reset</a>
+
+		</form>
+	</div>
+
+{% endblock %}

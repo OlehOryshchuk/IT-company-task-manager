@@ -1,0 +1,2 @@
+[flake8]
+exclude = */migrations/*, it_company_task_manager\settings.py

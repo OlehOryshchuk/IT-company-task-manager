@@ -1,0 +1,27 @@
+{% extends "layouts/base.html" %}
+{% load crispy_forms_filters %}
+
+{% block title %}
+  {{ object|yesno:"Update,Create" }}
+{% endblock %}
+
+{% block stylesheets %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/form_style.css' %}">
+{% endblock %}
+
+{% block content %}
+  <div class="container mt-8">
+    <h1>{{ object|yesno:"Update,Create" }} task type</h1>
+
+    <form action="" method="post" novalidate>
+
+      {% csrf_token %}
+      {{ form|crispy }}
+
+      <input type="submit" value="Submit" class="btn btn-primary">
+
+    </form>
+  </div>
+
+{% endblock %}

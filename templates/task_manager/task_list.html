@@ -1,0 +1,76 @@
+{% extends "layouts/base.html" %}
+{% load crispy_forms_filters %}
+
+{% block title %}
+    Tasks
+{% endblock %}
+
+{% block stylesheets %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/form_style.css' %}">
+{% endblock %}
+
+{% block content %}
+  <div class="container mt-8">
+    <div class="row">
+      <div class="col-md-6">
+        <h1>Tasks
+          <a href="{% url 'task_manager:task-create' %}" class="btn btn-primary">Create task</a>
+          <a href="{% url 'task_manager:task-type-create' %}" class="btn btn-primary">Create task type</a>
+        </h1>
+
+      </div>
+      <div class="col-md-6">
+        <div class="">
+          <div class="btn-group">
+            <form action="" method="get" class="form-inline">
+
+                {% csrf_token %}
+                {{ search_form|crispy }}
+
+                <input type="submit" value="Submit" class="btn btn-secondary">
+                <a href="{% url 'task_manager:task-filter' %}" class="btn btn-info">Filter</a>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Name</th>
+          <th>Is completed</th>
+          <th>Task type</th>
+          <th>Task priority</th>
+          <th>Deadline</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if task_list %}
+          {% for task in task_list %}
+            <tr>
+              <td>{{ task.id }}</td>
+              <td>
+                <a href="{% url 'task_manager:task-detail' pk=task.id %}">
+                  {% if task.owner == user %} Your task: {{ task.name }}{% else %} {{ task.name }} {% endif %}
+                </a>
+              </td>
+              <td>{{ task.is_completed|yesno:"Yes, No" }}</td>
+              <td>{{ task.task_type }}</td>
+              <td>{{ task.priority }}</td>
+              <td>{{ task.deadline }}</td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="6"><h4>There are no tasks in service</h4></td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
+

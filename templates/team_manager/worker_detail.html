@@ -1,0 +1,81 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}
+  Worker page
+{% endblock %}
+
+{% block content %}
+  <div class="container mt-8">
+    <h1>
+      Username: {{ worker.username }}
+      {% if user == worker %}
+        <a href="{% url 'team_manager:worker-update' pk=worker.id %}" class="btn btn-primary"> Update</a>
+        <a href="{% url 'team_manager:worker-delete' pk=worker.id %}" class="btn btn-danger"> Delete</a>
+      {% endif %}
+    </h1>
+
+    <p><strong>First name: </strong>{{ worker.first_name }}</p>
+    <p><strong>Last name: </strong>{{ worker.last_name }}</p>
+    <p><strong>Position: </strong>{{ worker.position.name }}</p>
+    <hr>
+    <p><a
+      href="{% url 'team_manager:team-list'%}?members={{ worker.id }}"
+      class="btn btn-secondary"
+    >Work at teams</a></p>
+
+
+    <div class="row">
+        <div class="col-6">
+          <h3>Completed tasks</h3>
+          {% for task in worker.tasks.all%}
+            {% if task.is_completed %}
+              <div class="col-xl-7 col-sm-6 col-12">
+                <div class="card">
+                  <div class="card-content">
+                    <div class="p-3">
+                      <div class="media d-flex">
+                        <div class="media-body">
+                            <h5 class="card-title link"><a href="{% url 'task_manager:task-detail' pk=task.id%}">{{ task.name }}</a></h5>
+                            <p>From: <a href="{% url 'team_manager:worker-detail' pk=task.owner.id%}">{{ task.owner }}</a></p>
+                            <p class="card-text">{{ task.description }}</p>
+                            <p>{{ task.deadline }}</p>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <hr>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <div class="col-6">
+          <h3>Not completed tasks</h3>
+          {% for task in worker.tasks.all %}
+            {% if not task.is_completed %}
+              <div class="col-xl-7 col-sm-6 col-12 ">
+                <div class="card">
+                  <div class="card-content">
+                    <div class="p-3">
+                      <div class="media d-flex">
+                        <div class="media-body">
+                            <h5 class="card-title link"><a href="{% url 'task_manager:task-detail' pk=task.id%}">{{ task.name }}</a></h5>
+                            <p>From: <a href="{% url 'team_manager:worker-detail' pk=task.owner.id%}">{{ task.owner }}</a></p>
+                            <p class="card-text">{{ task.description }}</p>
+                            <p>{{ task.deadline }}</p>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <hr>
+            {% endif %}
+          {% endfor %}
+        </div>
+    </div>
+  </div>
+{% endblock %}
