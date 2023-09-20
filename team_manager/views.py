@@ -207,6 +207,15 @@ class TeamUpdateView(LoginRequiredMixin, generic.UpdateView):
             kwargs={"pk": self.object.pk}
         )
 
+    def post(self, request, *args, **kwargs):
+        team = self.get_object()
+
+        selected_projects = request.POST.getlist("projects")
+
+        team.projects.set(selected_projects)
+
+        return super().post(request, *args, **kwargs)
+
 
 class TeamDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Team
