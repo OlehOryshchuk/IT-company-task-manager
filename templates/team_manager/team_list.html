@@ -39,7 +39,7 @@
                       <tr>
                           <th>#</th>
                           <th>Name</th>
-                          <th>Number of tasks</th>
+                          <th>Number of projects</th>
                           <th>Number of workers</th>
                       </tr>
                   </thead>
@@ -49,7 +49,7 @@
                      <tr>
                       <td>{{ team.id }}</td>
                       <td><a href="{% url 'team_manager:team-detail' pk=team.id %}">{{ team.name }}</a></td>
-                      <td>{{ team.projects.tasks.count }}</td>
+                      <td>{{ team.projects.count }}</td>
                       <td>{{ team.members.count }}</td>
 
                     </tr>
