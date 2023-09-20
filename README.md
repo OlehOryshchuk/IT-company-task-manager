@@ -21,7 +21,7 @@ python manage.py migrate
 python manage.py runserver
 ```
 ### Deployed
-
+[IT company task manager](https://it-company-task-manager-t49s.onrender.com)
 ## Features
 
 * Authentication functionality for Worker/User.
